@@ -59,8 +59,14 @@ class User
     public function add()
     {
         if ($this->isFilled()) {
-            $conn = Db::getInstance(null, null, null, null)->getConnection();
-            Sql1::insert($conn, "users", "login, email, password", "'$this->username', '$this->email', '$this->password'");
+            Db::query()->insertInto("users", "login, email, password", "'$this->username', '$this->email', '$this->password'")->execute();
+        }
+    }
+
+    public function edit()
+    {
+        if ($this->isFilled()) {
+            Db::query()->update("users", ["login" => "'$this->username'", "email" => "'$this->email'", "password" => "'$this->password'"])->execute();
         }
     }
 }

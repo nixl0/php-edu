@@ -10,7 +10,7 @@ class Db
     private $username = 'username';
     private $password = 'password';
 
-    private $sql;
+    protected $sql;
     
     private function __construct($host, $dbname, $username, $password)
     {
@@ -22,6 +22,7 @@ class Db
         $this->conn = new PDO("pgsql:host=$this->host;dbname=$this->dbname", "$this->username", "$this->password");
     }
     
+    // getInstance
     public static function authorize($host, $dbname, $username, $password)
     {
         if(!self::$instance) {
@@ -31,6 +32,7 @@ class Db
         return self::$instance;
     }
 
+    // get
     public static function query()
     {
         if(self::$instance) {
@@ -50,9 +52,20 @@ class Db
         return $this;
     }
 
-    public function update($table, $attr, $value)
+    public function update($table, $data)
     {
-        $this->sql = "UPDATE $table SET $attr = $value";
+        $this->sql = "UPDATE $table SET ";
+        
+        $moreThanOne = false;
+        foreach ($data as $attr => $value) {
+            if ($moreThanOne) {
+                $this->sql .= ", " . "$attr = $value";
+            }
+            else {
+                $this->sql .= "$attr = $value";
+            }
+        }
+        
         return $this;
     }
 
@@ -72,6 +85,11 @@ class Db
     {
         $this->sql .= " ORDER BY $sortExpression";
         return $this;
+    }
+
+    public function getSql()
+    {
+        return $this->sql;
     }
 
     public function execute()
