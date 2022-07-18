@@ -27,39 +27,20 @@ class User
         return $new_user;
     }
 
-    public function getId()
+    public function __get($property)
     {
-        return $this->id;
+        if (property_exists($this, $property)) {
+            return $this->$property;
+        }
     }
 
-    public function getLogin()
+    public function __set($property, $value)
     {
-        return $this->login;
-    }
+        if (property_exists($this, $property)) {
+            $this->$property = $value;
+        }
 
-    public function setLogin($login)
-    {
-        $this->login = $login;
-    }
-
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    public function setPassword($password)
-    {
-        $this->password = $password;
+        return $this;
     }
 
     /**

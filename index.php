@@ -11,16 +11,16 @@ Db1::getInstance("localhost", "practik", "postgres", "postgres");
 $user = new User();
 
 $user->get("id = 4");
-echo "<br>";
-echo $user->getId() . " " . $user->getLogin() . " " . $user->getEmail() . " " . $user->getPassword();
-echo "<br>";
+// echo "<br>";
+// echo $user->id . " " . $user->login . " " . $user->email . " " . $user->password;
+// echo "<br>";
 
-$user->setLogin("niiiiiiiiiiiiiiice");
-$user->edit();
+// $user->login = "niiiiiiiiiiiiiiice";
+// $user->edit();
 
 $user->get("id = 4");
 echo "<br>";
-echo $user->getId() . " " . $user->getLogin() . " " . $user->getEmail() . " " . $user->getPassword();
+echo $user->id . " " . $user->login . " " . $user->email . " " . $user->password;
 echo "<br>";
 
 echo "<br><br><br>";
