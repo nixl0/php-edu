@@ -29,15 +29,35 @@ class Db
         return self::$instance;
     }
 
+    public static function sql($sql)
+    {
+        return self::$conn->query($sql)->fetchColumn(0);
+    }
+
     public static function read($table)
     {
         $result = self::$conn->query("SELECT * FROM {$table}");
         return $result;
     }
 
-    public static function update($table, $attr, $value, $where)
+    public static function update($table, $data, $where)
     {
-        self::$conn->query("UPDATE $table SET $attr = '$value' WHERE $where");
+        $sql = "UPDATE $table SET ";
+
+        $moreThanOne = false;
+        foreach ($data as $attr => $value) {
+            if ($moreThanOne) {
+                $sql .= ", $attr = $value";
+            }
+            else {
+                $sql .= "$attr = $value";
+                $moreThanOne = true;
+            }
+        }
+
+        $sql .= "WHERE $where";
+
+        self::$conn->query($sql);
     }
 
     public static function insert($table, $attrs, $values)
