@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Model User.
+ * 
+ * @author nilixin <nilixen@yandex.ru>
+ * @version 1.0
+ */
 class User
 {
     private $id;
@@ -56,6 +62,10 @@ class User
         $this->password = $password;
     }
 
+    /**
+     * Checks if all of the properties are present and are full.
+     * If they are, then returns true.
+     */
     private function isFilled()
     {
         if ($this->login === null || trim($this->login) === '') {
@@ -71,6 +81,12 @@ class User
         return true;
     }
 
+    /**
+     * Returns the object of the class that satisfies the set where condition.
+     * 
+     * @param string $where Where condition.
+     * @return User Instance of the class User.
+     */
     public function get($where)
     {
         $this->id = Db::sql("SELECT id FROM users WHERE $where");
@@ -83,6 +99,9 @@ class User
         }
     }
 
+    /**
+     * Adds user if the properties are present and filled.
+     */
     public function add()
     {
         if ($this->isFilled()) {
@@ -90,6 +109,9 @@ class User
         }
     }
 
+    /**
+     * Edits user if the properties are present and filled.
+     */
     public function edit()
     {
         if ($this->isFilled()) {
