@@ -1,9 +1,9 @@
 <?php
 
-include 'sql.php';
+include 'db.php';
 include 'soft_del.php';
 
-class Sql1 extends Sql {
+class Db1 extends Db {
     use SoftDelete;
 }
 

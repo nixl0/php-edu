@@ -1,19 +1,13 @@
 <?php
 
-include 'db.php';
-include 'sql1.php';
+include 'db1.php';
 
-$conn = Db::getInstance("localhost", "practik", "postgres", "postgres")->getConnection();
+Db1::getInstance("localhost", "practik", "postgres", "postgres");
 
-// $result = Sql::read($conn, "users");
+// Db1::insert("users", "login, email, password", "'555', '555', '555'");
+// Db1::delete("users", "login = '555'");
 
-// Sql::update($conn, "users", "password", "222", "login = 'based_guy81'");
-// Sql::insert($conn, "users", "login, email, password", "111, 111, 111");
-Sql1::delete($conn, "users", "id = 7");
-
-$result = Sql1::read($conn, "users");
-
-
+$result = Db1::read("users");
 foreach ($result as $row) {
     print $row['id'] . " -- " . $row['login'] . " -- " . $row['email'] . " -- " . $row['password'] . "<br>";
 }

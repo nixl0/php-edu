@@ -3,7 +3,7 @@
 class Db
 {
     private static $instance = null;
-    private $conn;
+    protected static $conn;
   
     private $host = 'localhost';
     private $dbname = 'dbname';
@@ -17,22 +17,37 @@ class Db
         $this->username = $username;
         $this->password = $password;
 
-        $this->conn = new PDO("pgsql:host=$this->host;dbname=$this->dbname", "$this->username", "$this->password");
+        self::$conn = new PDO("pgsql:host=$this->host;dbname=$this->dbname", "$this->username", "$this->password");
     }
     
     public static function getInstance($host, $dbname, $username, $password)
     {
-        if(!self::$instance)
-        {
+        if (! self::$instance) {
             self::$instance = new Db($host, $dbname, $username, $password);
         }
     
         return self::$instance;
     }
-    
-    public function getConnection()
+
+    public static function read($table)
     {
-        return $this->conn;
+        $result = self::$conn->query("SELECT * FROM {$table}");
+        return $result;
+    }
+
+    public static function update($table, $attr, $value, $where)
+    {
+        self::$conn->query("UPDATE $table SET $attr = '$value' WHERE $where");
+    }
+
+    public static function insert($table, $attrs, $values)
+    {
+        self::$conn->query("INSERT INTO $table ($attrs) values ($values)");
+    }
+
+    public static function delete($table, $where)
+    {
+        self::$conn->query("DELETE FROM $table WHERE $where");
     }
 
 }
