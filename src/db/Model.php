@@ -1,9 +1,16 @@
 <?php
 
+namespace Nilixin\Edu\db;
+
 abstract class Model
 {
-    public abstract function construct($login, $email, $password);
-    public abstract function constructWithId($id, $login, $email, $password);
+    public abstract function table();
+    public abstract function fields();
+
+    public function key()
+    {
+        return "id";
+    }
 
     public function __get($property)
     {
@@ -11,7 +18,15 @@ abstract class Model
             return $this->$property;
         }
     }
-    public abstract function __set($property, $value);
+
+    public function __set($property, $value)
+    {
+        if (property_exists($this, $property)) {
+            $this->$property = $value;
+        }
+
+        return $this;
+    }
 
     public abstract function get($where);
 

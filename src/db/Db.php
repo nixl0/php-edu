@@ -12,26 +12,24 @@ class Db
      * PDO object. Represents a connection between PHP and a database server.
      */
     protected static $conn;
-  
-    private $host = 'localhost';
-    private $dbname = 'dbname';
-    private $username = 'username';
-    private $password = 'password';
     
-    private function __construct($host, $dbname, $username, $password)
+    private $host, $dbname, $username, $password;
+    private $pdoStatement;
+    
+    private function __construct()
     {
-        $this->host = $host;
-        $this->dbname = $dbname;
-        $this->username = $username;
-        $this->password = $password;
+        $this->host = $_ENV['DB_HOST'];
+        $this->dbname = $_ENV['DB_DATABASE'];
+        $this->username = $_ENV['DB_USER'];
+        $this->password = $_ENV['DB_PASS'];
 
         self::$conn = new PDO("pgsql:host=$this->host;dbname=$this->dbname", "$this->username", "$this->password");
     }
     
-    public static function getInstance($host, $dbname, $username, $password)
+    public static function getInstance()
     {
         if (! self::$instance) {
-            self::$instance = new Db($host, $dbname, $username, $password);
+            self::$instance = new Db();
         }
     
         return self::$instance;
@@ -42,10 +40,18 @@ class Db
      * 
      * @param string $sql Custom sql statement.
      * @return mixed Returns single row of the first column.
+     * // TODO rename sql to something more appropriate
      */
     public static function sql($sql)
     {
-        return self::$conn->query($sql)->fetchColumn(0);
+        $obj = self::getInstance();
+        $obj->pdoStatement = self::$conn->query($sql);
+        return $obj;
+    }
+
+    public function one()
+    {
+        return $this->pdoStatement->fetchObject();
     }
 
     /**

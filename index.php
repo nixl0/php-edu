@@ -5,8 +5,10 @@ require_once "vendor/autoload.php";
 use Nilixin\Edu\db\Db;
 use Nilixin\Edu\model\User;
 
-Db::getInstance("localhost", "practik", "postgres", "postgres");
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__, ".env");
+$dotenv->load();
 
+Db::getInstance();
 
 $user = new User();
 $user->get("id = 200");
