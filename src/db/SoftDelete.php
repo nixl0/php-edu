@@ -1,5 +1,7 @@
 <?php
 
+namespace Nilixin\Edu\db;
+
 trait SoftDelete
 {
 

@@ -1,5 +1,9 @@
 <?php
 
+namespace Nilixin\Edu\db;
+
+use PDO;
+
 class Db
 {
     private static $instance = null;

@@ -1,0 +1,19 @@
+{
+    "name": "nilixin/edu",
+    "description": "Practice project",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Nilixin\\Edu\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "nilixin",
+            "email": "nilixen@yandex.ru"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.4"
+    }
+}

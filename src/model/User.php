@@ -1,5 +1,10 @@
 <?php
 
+namespace Nilixin\Edu\model;
+
+use Nilixin\Edu\db\Db;
+use Nilixin\Edu\db\SoftDelete;
+
 /**
  * Model User.
  * 
@@ -8,6 +13,8 @@
  */
 class User
 {
+    use SoftDelete;
+
     private $id;
     private $login;
     private $email;
