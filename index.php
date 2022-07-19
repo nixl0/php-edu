@@ -4,23 +4,28 @@ require_once "vendor/autoload.php";
 
 use Nilixin\Edu\db\Db;
 use Nilixin\Edu\model\User;
+use Nilixin\Edu\db\Model;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, ".env");
 $dotenv->load();
 
-Db::getInstance();
-
-$user = new User();
-$user->get("id = 200");
-
-echo $user->id . " " . $user->login . " " . $user->email . " " . $user->password;
-echo "<br><br>";
-
-
-$result = Db::read("users");
-// print_r($result);
-foreach ($result as $row) {
-    print $row['id'] . " -- " . $row['login'] . " -- " . $row['email'] . " -- " . $row['password'] . "<br>";
+function printAllRows($table)
+{
+    $result = Db::read($table);
+    foreach ($result as $row) {
+        print $row['id'] . " -- " . $row['login'] . " -- " . $row['email'] . " -- " . $row['password'] . "<br>";
+    }
 }
 
-?>
+function printModelObject(Model $object)
+{
+    print_r($object);
+    foreach ($object->fields as $field) {
+        echo $object->{$field};
+    }
+    echo "<br><br>";
+}
+
+Db::initialize();
+
+printAllRows("users");

@@ -33,5 +33,3 @@ abstract class Model
     public abstract function add();
     public abstract function edit();
 }
-
-?>

@@ -6,17 +6,10 @@ use Nilixin\Edu\db\Db;
 use Nilixin\Edu\db\SoftDelete;
 use Nilixin\Edu\db\Model;
 
-/**
- * Model User.
- * 
- * @author nilixin <nilixen@yandex.ru>
- * @version 1.0
- */
 class User extends Model
 {
     use SoftDelete;
-
-    protected $id;
+    
     protected $login;
     protected $email;
     protected $password;
@@ -31,11 +24,6 @@ class User extends Model
         return ["login", "email", "password"];
     }
 
-    /**
-     * Checks if all of the properties are present and are full.
-     * If they are, then returns true.
-     * // TODO proper validation
-     */
     private function isFilled()
     {
         if ($this->login === null || trim($this->login) === '') {
@@ -51,12 +39,6 @@ class User extends Model
         return true;
     }
 
-    /**
-     * Returns the object of the class that satisfies the set where condition.
-     * 
-     * @param string $where Where condition.
-     * @return User Instance of the class User.
-     */
     public function get($where)
     {
         $table = $this->table();
@@ -72,9 +54,6 @@ class User extends Model
         }
     }
 
-    /**
-     * Adds user if the properties are present and filled.
-     */
     public function add()
     {
         if ($this->isFilled()) {
@@ -82,9 +61,6 @@ class User extends Model
         }
     }
 
-    /**
-     * Edits user if the properties are present and filled.
-     */
     public function edit()
     {
         if ($this->isFilled()) {
@@ -92,5 +68,3 @@ class User extends Model
         }
     }
 }
-
-?>
