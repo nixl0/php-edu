@@ -11,7 +11,7 @@ class Db
     protected static $conn;
     
     private $host, $dbname, $username, $password;
-    private $pdoStatement;
+    private $pdoStatement, $query;
     
     private function __construct()
     {
@@ -23,7 +23,7 @@ class Db
         self::$conn = new PDO("pgsql:host=$this->host;dbname=$this->dbname", "$this->username", "$this->password");
     }
     
-    public static function initialize()
+    public static function init()
     {
         if (! self::$instance) {
             self::$instance = new Db();
@@ -31,53 +31,76 @@ class Db
     
         return self::$instance;
     }
-    
-    public static function sql($sql)
+
+    public static function select($expression)
     {
-        $obj = self::initialize();
-        $obj->pdoStatement = self::$conn->query($sql);
-        return $obj;
+        $db = self::init();
+        $db->query = "SELECT $expression";
+        return $db;
     }
 
-    public function one()
+    public static function insert($table, $attrs, $vals)
     {
-        return $this->pdoStatement->fetchObject();
+        $db = self::init();
+        $db->query = "INSERT INTO $table ($attrs) VALUES ($vals)";
+        return $db;
     }
 
-    public static function read($table)
+    public static function update($table, $data)
     {
-        $result = self::$conn->query("SELECT * FROM {$table}");
-        return $result;
-    }
+        $db = self::init();
 
-    public static function update($table, $data, $where)
-    {
-        $sql = "UPDATE $table SET ";
+        $db->query = "UPDATE $table SET ";
 
         $moreThanOne = false;
         foreach ($data as $attr => $value) {
             if ($moreThanOne) {
-                $sql .= ", $attr = $value";
+                $db->query .= ", $attr = $value";
             }
             else {
-                $sql .= "$attr = $value";
+                $db->query .= "$attr = $value";
                 $moreThanOne = true;
             }
         }
 
-        $sql .= "WHERE $where";
-
-        self::$conn->query($sql);
+        return $db;
     }
 
-    public static function insert($table, $attrs, $values)
+    public static function delete($table)
     {
-        self::$conn->query("INSERT INTO $table ($attrs) values ($values)");
+        $db = self::init();
+
+        $db->query = "DELETE FROM $table";
+
+        return $db;
     }
-    
-    public static function delete($table, $where)
+
+    public static function from($table)
     {
-        self::$conn->query("DELETE FROM $table WHERE $where");
+        $db = self::init();
+        $db->query .= " FROM $table";
+        return $db;
+    }
+
+    public static function where($condition)
+    {
+        $db = self::init();
+        $db->query .= " WHERE $condition";
+        return $db;
+    }
+
+    public function getObject()
+    {
+        $this->pdoStatement = self::$conn->query($this->query);
+
+        return $this->pdoStatement->fetchObject();
+    }
+
+    public function getStatement()
+    {
+        $this->pdoStatement = self::$conn->query($this->query);
+
+        return $this->pdoStatement;
     }
 
 }

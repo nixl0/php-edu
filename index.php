@@ -9,23 +9,48 @@ use Nilixin\Edu\db\Model;
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, ".env");
 $dotenv->load();
 
-function printAllRows($table)
-{
-    $result = Db::read($table);
-    foreach ($result as $row) {
-        print $row['id'] . " -- " . $row['login'] . " -- " . $row['email'] . " -- " . $row['password'] . "<br>";
+// function printModelObject(Model $object)
+// {
+//     print_r($object);
+//     foreach ($object->fields as $field) {
+//         echo $object->{$field};
+//     }
+//     echo "<br><br>";
+// }
+
+Db::init();
+
+
+
+// SELECT EXAMPLE
+$result = Db::select("*")
+                ->from("users")
+                // ->where("id = 15")
+                ->getStatement();
+
+
+foreach ($result as $row) {
+    $isEven = true;
+    foreach ($row as $key => $value) {
+        if ($isEven) {
+            print $key . " -- " . $value . " | ";
+            $isEven = false;
+        }
+        else {
+            $isEven = true;
+        }
     }
+    print "<br>";
 }
 
-function printModelObject(Model $object)
-{
-    print_r($object);
-    foreach ($object->fields as $field) {
-        echo $object->{$field};
-    }
-    echo "<br><br>";
-}
+// UPDATE EXAMPLE
+// $result1 = Db::update("users", ["login" => "000", "email" => "000", "password" => "000"])->getStatement();
+// var_dump($result1);
 
-Db::initialize();
+// INSERT EXAMPLE
+// $result2 = Db::insert("users", "login, email, password", "'bye', 'bye', 'bye'")->getStatement();
+// var_dump($result2);
 
-printAllRows("users");
+// DELETE EXAMPLE
+// $result3 = Db::delete("users")->where("id = 460")->getStatement();
+// var_dump($result3);
