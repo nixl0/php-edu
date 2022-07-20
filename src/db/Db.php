@@ -50,18 +50,18 @@ class Db
     {
         $db = self::init();
 
-        $db->query = "UPDATE $table SET ";
+        $db->query = "UPDATE $table SET $data";
 
-        $moreThanOne = false;
-        foreach ($data as $attr => $value) {
-            if ($moreThanOne) {
-                $db->query .= ", $attr = $value";
-            }
-            else {
-                $db->query .= "$attr = $value";
-                $moreThanOne = true;
-            }
-        }
+        // $moreThanOne = false;
+        // foreach ($data as $attr => $value) {
+        //     if ($moreThanOne) {
+        //         $db->query .= ", $attr = $value";
+        //     }
+        //     else {
+        //         $db->query .= "$attr = $value";
+        //         $moreThanOne = true;
+        //     }
+        // }
 
         return $db;
     }
@@ -101,6 +101,11 @@ class Db
         $this->pdoStatement = self::$conn->query($this->query);
 
         return $this->pdoStatement;
+    }
+
+    public function getQueryString()
+    {
+        return $this->query;
     }
 
 }

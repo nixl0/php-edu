@@ -19,52 +19,36 @@ class User extends Model
         return "users";
     }
 
+
     public function fields()
     {
         return ["login", "email", "password"];
     }
 
-    private function isFilled()
+    public function validate()
     {
-        if ($this->login === null || trim($this->login) === '') {
-            return false;
-        }
-        if ($this->email === null || trim($this->email) === '') {
-            return false;
-        }
-        if ($this->password === null || trim($this->password) === '') {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function get($where)
-    {
-        $table = $this->table();
-        $res = Db::sql("SELECT * FROM $table WHERE $where")->one();
-        $this->{$this->key()} = $res->{$this->key()};
         
-        foreach ($this->fields() as $field) {
-            $this->{$field} = $res->{$field};
-        }
-
-        if ($this->isFilled()) {
-            return $this;
-        }
     }
 
-    public function add()
-    {
-        if ($this->isFilled()) {
-            Db::insert($this->table, implode(", ", $this->fields), "'$this->login', '$this->email', '$this->password'");
-        }
-    }
+    // private function isFilled()
+    // {
+    //     if ($this->login === null || trim($this->login) === '') {
+    //         return false;
+    //     }
+    //     if ($this->email === null || trim($this->email) === '') {
+    //         return false;
+    //     }
+    //     if ($this->password === null || trim($this->password) === '') {
+    //         return false;
+    //     }
 
-    public function edit()
-    {
-        if ($this->isFilled()) {
-            Db::update($this->table(), ["login" => "'$this->login'", "email" => "'$this->email'", "password" => "'$this->password'"], "id = $this->id");
-        }
-    }
+    //     return true;
+    // }
+
+    // public function edit()
+    // {
+    //     if ($this->isFilled()) {
+    //         Db::update($this->table(), ["login" => "'$this->login'", "email" => "'$this->email'", "password" => "'$this->password'"], "id = $this->id");
+    //     }
+    // }
 }
