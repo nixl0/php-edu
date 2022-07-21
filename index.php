@@ -20,38 +20,37 @@ $dotenv->load();
 
 Db::init();
 
-$user = new User();
-$user->selectOne("id = 459");
-$user->password = "amerika";
+// $user = new User();
+// $user->selectOne("id = 300");
+// // $user->edit();
 
-// $user1 = new User();
-// $user1->login = "fox";
-// $user1->email = "fox@fox.com";
-// $user1->password = "wolf";
-$user->edit();
+// // var_dump($user);
+// // echo "<br><br>";
+// print($user);
 
 
 
 // SELECT EXAMPLE
-// $result = Db::select("*")
-//                 ->from("users")
-//                 // ->where("id = 15")
-//                 ->getStatement();
+$result = Db::select("*")
+                ->from("users")
+                // ->where("id = 15")
+                ->getStatement();
 
+// var_dump($result);
 
-// foreach ($result as $row) {
-//     $isEven = true;
-//     foreach ($row as $key => $value) {
-//         if ($isEven) {
-//             print $key . " -- " . $value . " | ";
-//             $isEven = false;
-//         }
-//         else {
-//             $isEven = true;
-//         }
-//     }
-//     print "<br>";
-// }
+foreach ($result as $row) {
+    $isEven = true;
+    foreach ($row as $key => $value) {
+        if ($isEven) {
+            print $key . " -- " . $value . " | ";
+            $isEven = false;
+        }
+        else {
+            $isEven = true;
+        }
+    }
+    print "<br>";
+}
 
 // UPDATE EXAMPLE DEPRECATED
 // $result1 = Db::update("users", ["login" => "000", "email" => "000", "password" => "000"])->getStatement();

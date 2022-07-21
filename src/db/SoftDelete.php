@@ -5,9 +5,13 @@ namespace Nilixin\Edu\db;
 trait SoftDelete
 {
     
-    public static function delete($table, $where)
+    public static function delete($table)
     {
-        parent::$conn->query("UPDATE $table SET deleted_at = now() WHERE $where");
+        $db = self::init();
+
+        $db->query = "UPDATE $table SET deleted_at = now()";
+
+        return $db;
     }
     
 }

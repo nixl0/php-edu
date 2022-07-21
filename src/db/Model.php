@@ -36,6 +36,25 @@ abstract class Model
         return $this;
     }
 
+    public function __toString()
+    {
+        $properties = get_object_vars($this);
+
+        $string = "";
+        $isFirst = true;
+        foreach ($properties as $key => $property) {
+            if ($isFirst) {
+                $string .= "($key): $property";
+                $isFirst = false;
+            }
+            else {
+                $string .= ", ($key): $property";
+            }
+        }
+
+        return $string;
+    }
+
     public abstract function validate();
 
     /**
@@ -56,7 +75,8 @@ abstract class Model
                     ->getObject();
 
         // значение key
-        $this->keyValue = $object->{$this->key()}; // TODO понять синтаксис
+        // $this->{$this->key()} = $object->{$this->key()}; // TODO понять синтаксис
+        $this->keyValue = $object->{$this->key()};
 
         // остальные значения
         foreach ($this->fields() as $field) {

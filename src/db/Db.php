@@ -78,29 +78,42 @@ class Db
     public static function from($table)
     {
         $db = self::init();
+
         $db->query .= " FROM $table";
+
         return $db;
     }
 
     public static function where($condition)
     {
         $db = self::init();
+
         $db->query .= " WHERE $condition";
+
         return $db;
     }
 
     public function getObject()
     {
-        $this->pdoStatement = self::$conn->query($this->query);
+        $this->pdoStatement = self::$conn->prepare($this->query);
+        $this->pdoStatement->execute();
 
         return $this->pdoStatement->fetchObject();
     }
 
     public function getStatement()
     {
-        $this->pdoStatement = self::$conn->query($this->query);
+        $this->pdoStatement = self::$conn->prepare($this->query);
+        $this->pdoStatement->execute();
 
         return $this->pdoStatement;
+    }
+
+    public function fetch()
+    {
+        $this->pdoStatement = self::$conn->prepare($this->query);
+        $this->pdoStatement->execute();
+        return $this->pdoStatement->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getQueryString()
