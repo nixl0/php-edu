@@ -55,6 +55,26 @@ abstract class Model
         return $string;
     }
 
+    /**
+     * Проверяет свойства на определенность и пустоту
+     * 
+     * Возвращает FALSE, если хотя бы одно из свойств не определено или пустой, иначе TRUE.
+     * Лучше использовать как часть метода validate(), который определяется отдельно
+     * в зависимости от соответствующих условий отбора свойств.
+     */
+    public function validateBasic()
+    {
+        $vals = get_object_vars($this);
+
+        foreach ($vals as $val) {
+            if (! isset($val) && empty($val)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public abstract function validate();
 
     /**
@@ -91,11 +111,14 @@ abstract class Model
      */
     public function add()
     {
+        if (! $this->validate()) {
+            return;
+        }
+        
         $vals = get_object_vars($this);
-        // TODO валидация
 
         // окружение значений пользователя одинарными кавычками
-        array_walk($vals, function(&$value, $_) { $value = "'" . "$value" . "'"; });
+        array_walk($vals, function(&$value) { $value = "'" . "$value" . "'"; });
 
         Db::insert($this->table(), implode(", ", $this->fields()), implode(", ", $vals))
           ->getStatement();
@@ -103,8 +126,11 @@ abstract class Model
 
     public function edit()
     {
+        if (! $this->validate()) {
+            return;
+        }
+        
         $vals = get_object_vars($this);
-        // TODO валидация
 
         // окружение значений пользователя одинарными кавычками
         array_walk($vals, function(&$value) { $value = "'" . "$value" . "'"; });

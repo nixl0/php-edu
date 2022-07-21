@@ -26,28 +26,16 @@ class User extends Model
 
     public function validate()
     {
-        
+        if ($this->validateBasic()) {
+            if (! preg_match("/^[a-zA-Z-']*$/", $this->login)) {
+                return false;
+            }
+
+            if (! filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+                return false;
+            }
+
+            return true;
+        }
     }
-
-    // private function isFilled()
-    // {
-    //     if ($this->login === null || trim($this->login) === '') {
-    //         return false;
-    //     }
-    //     if ($this->email === null || trim($this->email) === '') {
-    //         return false;
-    //     }
-    //     if ($this->password === null || trim($this->password) === '') {
-    //         return false;
-    //     }
-
-    //     return true;
-    // }
-
-    // public function edit()
-    // {
-    //     if ($this->isFilled()) {
-    //         Db::update($this->table(), ["login" => "'$this->login'", "email" => "'$this->email'", "password" => "'$this->password'"], "id = $this->id");
-    //     }
-    // }
 }

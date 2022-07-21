@@ -52,17 +52,6 @@ class Db
 
         $db->query = "UPDATE $table SET $data";
 
-        // $moreThanOne = false;
-        // foreach ($data as $attr => $value) {
-        //     if ($moreThanOne) {
-        //         $db->query .= ", $attr = $value";
-        //     }
-        //     else {
-        //         $db->query .= "$attr = $value";
-        //         $moreThanOne = true;
-        //     }
-        // }
-
         return $db;
     }
 
