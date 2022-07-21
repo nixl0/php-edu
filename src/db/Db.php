@@ -35,14 +35,18 @@ class Db
     public static function select($expression)
     {
         $db = self::init();
+
         $db->query = "SELECT $expression";
+
         return $db;
     }
 
     public static function insert($table, $attrs, $vals)
     {
         $db = self::init();
+
         $db->query = "INSERT INTO $table ($attrs) VALUES ($vals)";
+        
         return $db;
     }
 
@@ -51,17 +55,6 @@ class Db
         $db = self::init();
 
         $db->query = "UPDATE $table SET $data";
-
-        // $moreThanOne = false;
-        // foreach ($data as $attr => $value) {
-        //     if ($moreThanOne) {
-        //         $db->query .= ", $attr = $value";
-        //     }
-        //     else {
-        //         $db->query .= "$attr = $value";
-        //         $moreThanOne = true;
-        //     }
-        // }
 
         return $db;
     }

@@ -9,48 +9,61 @@ use Nilixin\Edu\db\Model;
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, ".env");
 $dotenv->load();
 
-// function printModelObject(Model $object)
-// {
-//     print_r($object);
-//     foreach ($object->fields as $field) {
-//         echo $object->{$field};
-//     }
-//     echo "<br><br>";
-// }
-
 Db::init();
 
-// $user = new User();
-// $user->selectOne("id = 300");
-// // $user->edit();
+$user = new User();
+$user->selectOne("id = 300");
 
-// // var_dump($user);
-// // echo "<br><br>";
-// print($user);
+print($user);
+echo "<br><br>";
+
+// $user->login = "blabla";
+// $user->email = "random@bs.c";
+
+// $user->edit();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 // SELECT EXAMPLE
-$result = Db::select("*")
-                ->from("users")
-                // ->where("id = 15")
-                ->getStatement();
+// $result = Db::select("*")
+//                 ->from("users")
+//                 // ->where("id = 15")
+//                 ->getStatement();
 
 // var_dump($result);
 
-foreach ($result as $row) {
-    $isEven = true;
-    foreach ($row as $key => $value) {
-        if ($isEven) {
-            print $key . " -- " . $value . " | ";
-            $isEven = false;
-        }
-        else {
-            $isEven = true;
-        }
-    }
-    print "<br>";
-}
+// foreach ($result as $row) {
+//     $isEven = true;
+//     foreach ($row as $key => $value) {
+//         if ($isEven) {
+//             print $key . " -- " . $value . " | ";
+//             $isEven = false;
+//         }
+//         else {
+//             $isEven = true;
+//         }
+//     }
+//     print "<br>";
+// }
 
 // UPDATE EXAMPLE DEPRECATED
 // $result1 = Db::update("users", ["login" => "000", "email" => "000", "password" => "000"])->getStatement();
