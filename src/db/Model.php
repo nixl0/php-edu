@@ -8,6 +8,7 @@ abstract class Model
 
     public abstract function table();
 
+    public $keyValue;
     public function key()
     {
         return "id";
@@ -55,7 +56,7 @@ abstract class Model
                     ->getObject();
 
         // значение key
-        $this->{$this->key()} = $object->{$this->key()}; // TODO понять синтаксис
+        $this->keyValue = $object->{$this->key()}; // TODO понять синтаксис
 
         // остальные значения
         foreach ($this->fields() as $field) {
@@ -80,20 +81,17 @@ abstract class Model
           ->getStatement();
     }
 
-    /**
-     * @deprecated
-     */
     public function edit()
     {
         $vals = get_object_vars($this);
         // TODO валидация
 
         // окружение значений пользователя одинарными кавычками
-        array_walk($vals, function(&$value, $_) { $value = "'" . "$value" . "'"; });
+        array_walk($vals, function(&$value) { $value = "'" . "$value" . "'"; });
 
         $data = "";
         $isFirst = true;
-        foreach ($this->fields() as $_ => $field) {
+        foreach ($this->fields() as $field) {
             if ($isFirst) {
                 $data .= "$field = $vals[$field]";
                 $isFirst = false;
@@ -103,11 +101,8 @@ abstract class Model
             }
         }
 
-        var_dump($this->{$this->key()});
-        $key = $this->{$this->key()};
-
-        return Db::update($this->table(), $data)
-          ->where("id = $key")
-          ->getQueryString();
+        Db::update($this->table(), $data)
+          ->where("id = $this->keyValue")
+          ->getStatement();
     }
 }

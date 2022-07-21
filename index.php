@@ -22,14 +22,13 @@ Db::init();
 
 $user = new User();
 $user->selectOne("id = 459");
-$user->password = "wolf";
+$user->password = "amerika";
 
 // $user1 = new User();
 // $user1->login = "fox";
 // $user1->email = "fox@fox.com";
 // $user1->password = "wolf";
-$qr = $user->edit();
-var_dump($qr);
+$user->edit();
 
 
 

@@ -19,7 +19,6 @@ class User extends Model
         return "users";
     }
 
-
     public function fields()
     {
         return ["login", "email", "password"];
