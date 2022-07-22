@@ -2,25 +2,48 @@
 
 namespace Nilixin\Edu\db;
 
-
 use Nilixin\Edu\debug\Debug;
+use Nilixin\Edu\db\Validation;
 
-class Model
+abstract class Model
 {
     // Базовые константы
+
+
+    
     protected $id;
+
+
 
     public function dbo()
     {
         return Db::init();
     }
 
+
+
+    public abstract function table();
+
+
+
     public function key()
     {
         return "id";
     }
 
+
+
+    public abstract function fields();
+
+
+
+    public abstract function rules();
+
+
+
     // Магические методы
+
+
 
     public function __get($property)
     {
@@ -28,6 +51,7 @@ class Model
             return $this->$property;
         }
     }
+
 
 
     public function __set($property, $value)
@@ -39,6 +63,7 @@ class Model
 
         return $this;
     }
+
 
 
     public function __toString()
@@ -59,25 +84,116 @@ class Model
         return $string;
     }
 
+
+
+    public function getObjectVals()
+    {
+        $vals = array();
+
+        foreach ($this->fields() as $field) {
+            $vals[$field] = $this->{$field};
+        }
+
+        return $vals;
+    }
+
+
+
     /**
      * Проверяет свойства на определенность и пустоту
      *
      * Возвращает FALSE, если хотя бы одно из свойств не определено или пустое, иначе TRUE.
      * Лучше использовать как часть метода validate(), который определяется отдельно
      * в зависимости от соответствующих условий отбора свойств.
+     * 
+     * // TODO переписать описание
      */
-    public function validateBasic()
+    public function idle()
     {
-        $vals = get_object_vars($this);
+        $vals = $this->getObjectVals();
 
         foreach ($vals as $val) {
-            if (!isset($val) && empty($val)) {
-                return false;
+            if (! isset($val) && empty($val)) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
+
+
+
+    public function validate()
+    {
+        // TODO понасоздавать кучу исключений для вывода ошибок
+
+        if (! $this->idle()) {
+            if (null == $this->rules()) {
+                return;
+            }
+
+            foreach ($this->rules() as $attr => $rules) {
+                // Debug::prn($attr);
+                foreach ($rules as $rule => $val) {
+                    // Debug::prn("$rule : $val");
+                    
+                    switch ($rule) {
+                        
+                        // REGEX
+                        case 'regex':
+                            if ($val == 'plain') {
+                                if (! Validation::regexPlain($this->{$attr})) {
+                                    Debug::prn("bad validation regex plain");
+                                    return false;
+                                }
+                            }
+                            else {
+                                Debug::prn("bad validation regex plain empty");
+                                return false;
+                            }
+                            break;
+
+                        // SIZE
+                        case 'size':
+                            // проверка на то, что определены границы размера
+                            if (! isset($val[0]) || empty($val[0]) || ! isset($val[1]) || empty($val[1])) {
+                                Debug::prn("bad validation size borders");
+                                return false;
+                            }
+
+                            if (! Validation::size($this->{$attr}, $val[0], $val[1])) {
+                                Debug::prn("bad validation size");
+                                return false;
+                            }
+                            break;
+
+                        // FILTER
+                        case 'filter':
+                            if ($val == 'email') {
+                                if (! Validation::filterEmail($this->{$attr})) {
+                                    Debug::prn("bad validation email");
+                                    return false;
+                                }
+                            }
+                            else {
+                                Debug::prn("bad validation email empty");
+                                return false;
+                            }
+                            break;
+                        
+                        default:
+                            Debug::prn("entered default");
+                            return false;
+                            break;
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
+
+
 
     /**
      * Автоматическое присвоение значений переменным.
@@ -97,14 +213,15 @@ class Model
             ->getObject();
 
         // значение key
-        $this->{$this->key()} = $object->{$this->key()}; // TODO понять синтаксис
-        //$this->keyValue = $object->{$this->key()};
+        $this->{$this->key()} = $object->{$this->key()};
 
         // остальные значения
         foreach ($this->fields() as $field) {
             $this->{$field} = $object->{$field};
         }
     }
+
+
 
     /**
      * Добавление новой записи в таблицу БД.
@@ -118,7 +235,7 @@ class Model
             return;
         }
 
-        $vals = get_object_vars($this);
+        $vals = $this->getObjectVals();
 
         // окружение значений пользователя одинарными кавычками
         array_walk($vals, function (&$value) {
@@ -130,20 +247,25 @@ class Model
     }
 
 
+
     public function edit()
     {
         if (!$this->validate()) {
             echo "bad validation";
             return;
         }
+        Debug::prn("good validation");
 
-        $vals = get_object_vars($this);
+        $vals = $this->getObjectVals();
+
+        Debug::prn($vals);
 
         // окружение значений пользователя одинарными кавычками
         array_walk($vals, function (&$value) {
             $value = "'" . "$value" . "'";
         });
 
+        // конкатенация атрибутов и их значений
         $data = "";
         $isFirst = true;
         foreach ($this->fields() as $field) {
@@ -155,16 +277,21 @@ class Model
             }
         }
 
+        $id = $this->{$this->key()};
+
         $this->dbo()::update($this->table(), $data)
-            ->where("id = $this->keyValue")
+            ->where("id = $id")
             ->getStatement();
     }
 
 
+
     public function delete()
     {
+        $id = $this->{$this->key()};
+
         $this->dbo()::delete($this->table())
-            ->where("id = $this->keyValue")
+            ->where("id = $id")
             ->getStatement();
     }
 }

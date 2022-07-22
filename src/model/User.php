@@ -2,12 +2,13 @@
 
 namespace Nilixin\Edu\model;
 
-use Nilixin\Edu\db\Db1;
+use Nilixin\Edu\db\Db;
 use Nilixin\Edu\db\Model;
-use Nilixin\Edu\db\ModelInterface;
+use Nilixin\Edu\db\SoftDelete;
 
-class User extends Model implements ModelInterface
+class User extends Model
 {
+    use SoftDelete;
 
     protected $login;
     protected $email;
@@ -15,12 +16,12 @@ class User extends Model implements ModelInterface
 
     public function dbo()
     {
-        return Db1::init();
+        return Db::init();
     }
 
     public function table(): string
     {
-        return "user";
+        return "users";
     }
 
     public function fields(): array
@@ -32,27 +33,15 @@ class User extends Model implements ModelInterface
     {
         return [
             'login' => [
-                'type' => 'login', 'min' => 3, 'max' => 15,
+                'regex' => 'plain',
+                'size' => [3, 64]
+            ],
+            'email' => [
+                'filter' => 'email'
+            ],
+            'password' => [
+                'size' => [6, 128]
             ]
         ];
-    }
-
-    public function validate()
-    {
-        if ($this->validateBasic()) {
-            if (!preg_match("/^[0-9a-zA-Z-'_]*$/", $this->login)) {
-                return false;
-            }
-
-            if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-                return false;
-            }
-
-            if (strlen($this->password) < 6) {
-                return false;
-            }
-
-            return true;
-        }
     }
 }

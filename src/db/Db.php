@@ -31,7 +31,7 @@ class Db
     public static function init()
     {
         if (! self::$instance) {
-            self::$instance = new Db(); // TODO new Db1?
+            self::$instance = new Db();
         }
     
         return self::$instance;

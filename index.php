@@ -15,20 +15,45 @@ $dotenv->load();
 Db::init();
 
 $user = new User();
-$user->selectOne("id = 1");
+// $user->login = "hello";
+// $user->email = "la@la.la";
+// $user->password = "eopnbpobn";
+$user->selectOne("id = 100");
+Debug::prn($user);
+// $user->password = "Ffffffffffff";
+$user->delete();
+
 
 // $user->delete();
 // $user->selectOne("id = 70");
-// print($user);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //$view = new View();
 //$view->setTpl("public/tpl/main.html");
 //$view->render($user);
 
-$content = file_get_contents("public/tpl/main.html");
-$content = str_replace("{{login}}", $user->login, $content);
-$content = str_replace("{{email}}", $user->email, $content);
-echo $content;
+// $content = file_get_contents("public/tpl/main.html");
+// $content = str_replace("{{login}}", $user->login, $content);
+// $content = str_replace("{{email}}", $user->email, $content);
+// echo $content;
 
 // print($user);
 
