@@ -4,7 +4,6 @@ require_once "vendor/autoload.php";
 
 use Nilixin\Edu\db\Db;
 use Nilixin\Edu\model\User;
-use Nilixin\Edu\db\Model;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, ".env");
 $dotenv->load();
@@ -12,9 +11,14 @@ $dotenv->load();
 Db::init();
 
 $user = new User();
-$user->selectOne("id = 300");
-
+$user->selectOne("id = 2");
 print($user);
+// $user->delete();
+// $user->selectOne("id = 70");
+// print($user);
+
+
+// print($user);
 echo "<br><br>";
 
 // $user->login = "blabla";

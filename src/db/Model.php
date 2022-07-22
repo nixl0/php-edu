@@ -4,8 +4,13 @@ namespace Nilixin\Edu\db;
 
 abstract class Model
 {
-    // Basic constants
+    // Базовые константы
 
+    public function dbo()
+    {
+        return Db::init();
+    }
+    
     public abstract function table();
 
     public $keyValue;
@@ -18,7 +23,7 @@ abstract class Model
 
     
     
-    // Magic methods
+    // Магические методы
 
     public function __get($property)
     {
@@ -26,6 +31,8 @@ abstract class Model
             return $this->$property;
         }
     }
+
+
 
     public function __set($property, $value)
     {
@@ -35,6 +42,8 @@ abstract class Model
 
         return $this;
     }
+
+
 
     public function __toString()
     {
@@ -58,7 +67,7 @@ abstract class Model
     /**
      * Проверяет свойства на определенность и пустоту
      * 
-     * Возвращает FALSE, если хотя бы одно из свойств не определено или пустой, иначе TRUE.
+     * Возвращает FALSE, если хотя бы одно из свойств не определено или пустое, иначе TRUE.
      * Лучше использовать как часть метода validate(), который определяется отдельно
      * в зависимости от соответствующих условий отбора свойств.
      */
@@ -71,7 +80,7 @@ abstract class Model
                 return false;
             }
         }
-
+        
         return true;
     }
 
@@ -89,7 +98,7 @@ abstract class Model
      */
     public function selectOne($condition, $expression = "*")
     {
-        $object = Db::select($expression)
+        $object = $this->dbo()::select($expression)
                     ->from($this->table())
                     ->where($condition)
                     ->getObject();
@@ -112,6 +121,7 @@ abstract class Model
     public function add()
     {
         if (! $this->validate()) {
+            echo "bad validation";
             return;
         }
         
@@ -120,13 +130,16 @@ abstract class Model
         // окружение значений пользователя одинарными кавычками
         array_walk($vals, function(&$value) { $value = "'" . "$value" . "'"; });
 
-        Db::insert($this->table(), implode(", ", $this->fields()), implode(", ", $vals))
+        $this->dbo()::insert($this->table(), implode(", ", $this->fields()), implode(", ", $vals))
           ->getStatement();
     }
+
+
 
     public function edit()
     {
         if (! $this->validate()) {
+            echo "bad validation";
             return;
         }
         
@@ -147,7 +160,16 @@ abstract class Model
             }
         }
 
-        Db::update($this->table(), $data)
+        $this->dbo()::update($this->table(), $data)
+          ->where("id = $this->keyValue")
+          ->getStatement();
+    }
+
+
+
+    public function delete()
+    {
+        $this->dbo()::delete($this->table())
           ->where("id = $this->keyValue")
           ->getStatement();
     }

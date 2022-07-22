@@ -12,6 +12,8 @@ class Db
     
     private $host, $dbname, $username, $password;
     private $pdoStatement, $query;
+
+
     
     private function __construct()
     {
@@ -22,15 +24,19 @@ class Db
 
         self::$conn = new PDO("pgsql:host=$this->host;dbname=$this->dbname", "$this->username", "$this->password");
     }
+
+
     
     public static function init()
     {
         if (! self::$instance) {
-            self::$instance = new Db();
+            self::$instance = new Db(); // TODO new Db1?
         }
     
         return self::$instance;
     }
+
+
 
     public static function select($expression)
     {
@@ -41,6 +47,8 @@ class Db
         return $db;
     }
 
+
+
     public static function insert($table, $attrs, $vals)
     {
         $db = self::init();
@@ -49,6 +57,8 @@ class Db
         
         return $db;
     }
+
+
 
     public static function update($table, $data)
     {
@@ -59,6 +69,8 @@ class Db
         return $db;
     }
 
+
+
     public static function delete($table)
     {
         $db = self::init();
@@ -67,6 +79,8 @@ class Db
 
         return $db;
     }
+
+
 
     public static function from($table)
     {
@@ -77,6 +91,8 @@ class Db
         return $db;
     }
 
+
+
     public static function where($condition)
     {
         $db = self::init();
@@ -86,6 +102,8 @@ class Db
         return $db;
     }
 
+
+
     public function getObject()
     {
         $this->pdoStatement = self::$conn->prepare($this->query);
@@ -93,6 +111,8 @@ class Db
 
         return $this->pdoStatement->fetchObject();
     }
+
+
 
     public function getStatement()
     {
@@ -102,12 +122,16 @@ class Db
         return $this->pdoStatement;
     }
 
+
+
     public function fetch()
     {
         $this->pdoStatement = self::$conn->prepare($this->query);
         $this->pdoStatement->execute();
         return $this->pdoStatement->fetch(PDO::FETCH_ASSOC);
     }
+
+    
 
     public function getQueryString()
     {
