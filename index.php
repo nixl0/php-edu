@@ -2,24 +2,36 @@
 
 require_once "vendor/autoload.php";
 
+error_reporting(-1);
+ini_set("display_errors", 1);
+
 use Nilixin\Edu\db\Db;
 use Nilixin\Edu\model\User;
+use Nilixin\Edu\debug\Debug;
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__, ".env");
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__, ".env.local");
 $dotenv->load();
 
 Db::init();
 
 $user = new User();
-$user->selectOne("id = 2");
-print($user);
+$user->selectOne("id = 1");
+
 // $user->delete();
 // $user->selectOne("id = 70");
 // print($user);
 
+//$view = new View();
+//$view->setTpl("public/tpl/main.html");
+//$view->render($user);
+
+$content = file_get_contents("public/tpl/main.html");
+$content = str_replace("{{login}}", $user->login, $content);
+$content = str_replace("{{email}}", $user->email, $content);
+echo $content;
 
 // print($user);
-echo "<br><br>";
+
 
 // $user->login = "blabla";
 // $user->email = "random@bs.c";

@@ -10,7 +10,7 @@ class Db
 
     protected static $conn;
     
-    private $host, $dbname, $username, $password;
+    private $host, $dbname, $username, $password, $dbDriver;
     private $pdoStatement, $query;
 
 
@@ -18,11 +18,12 @@ class Db
     private function __construct()
     {
         $this->host = $_ENV['DB_HOST'];
-        $this->dbname = $_ENV['DB_DATABASE'];
+        $this->dbname = $_ENV['DB_NAME'];
         $this->username = $_ENV['DB_USER'];
         $this->password = $_ENV['DB_PASS'];
+        $this->dbDriver = $_ENV['DB_DRIVER'];
 
-        self::$conn = new PDO("pgsql:host=$this->host;dbname=$this->dbname", "$this->username", "$this->password");
+        self::$conn = new PDO("$this->dbDriver:host=$this->host;dbname=$this->dbname", "$this->username", "$this->password");
     }
 
 

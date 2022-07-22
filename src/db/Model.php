@@ -2,27 +2,24 @@
 
 namespace Nilixin\Edu\db;
 
-abstract class Model
+
+use Nilixin\Edu\debug\Debug;
+
+class Model
 {
     // Базовые константы
+    protected $id;
 
     public function dbo()
     {
         return Db::init();
     }
-    
-    public abstract function table();
 
-    public $keyValue;
     public function key()
     {
         return "id";
     }
 
-    public abstract function fields();
-
-    
-    
     // Магические методы
 
     public function __get($property)
@@ -33,16 +30,15 @@ abstract class Model
     }
 
 
-
     public function __set($property, $value)
     {
+
         if (property_exists($this, $property)) {
             $this->$property = $value;
         }
 
         return $this;
     }
-
 
 
     public function __toString()
@@ -55,8 +51,7 @@ abstract class Model
             if ($isFirst) {
                 $string .= "($key): $property";
                 $isFirst = false;
-            }
-            else {
+            } else {
                 $string .= ", ($key): $property";
             }
         }
@@ -66,7 +61,7 @@ abstract class Model
 
     /**
      * Проверяет свойства на определенность и пустоту
-     * 
+     *
      * Возвращает FALSE, если хотя бы одно из свойств не определено или пустое, иначе TRUE.
      * Лучше использовать как часть метода validate(), который определяется отдельно
      * в зависимости от соответствующих условий отбора свойств.
@@ -76,22 +71,20 @@ abstract class Model
         $vals = get_object_vars($this);
 
         foreach ($vals as $val) {
-            if (! isset($val) && empty($val)) {
+            if (!isset($val) && empty($val)) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
-    public abstract function validate();
-
     /**
      * Автоматическое присвоение значений переменным.
-     * 
+     *
      * Отбирает запись по указанному условию отбора из БД, затем автоматически присваивает значение переменным модели.
      * Для корректной работы требуется чтобы названия полей БД и свойств модели совпадали.
-     * 
+     *
      * @param string $condition Условие, которое определяет запись, обычно id, хотя может быть абсолютно любым полем.
      * Примеры: "id = 2", "username = 'Иван'".
      * @param string $expression Выражение, которое требуется вернуть. По умолчанию "*". Изменять не желательно.
@@ -99,13 +92,13 @@ abstract class Model
     public function selectOne($condition, $expression = "*")
     {
         $object = $this->dbo()::select($expression)
-                    ->from($this->table())
-                    ->where($condition)
-                    ->getObject();
+            ->from($this->table())
+            ->where($condition)
+            ->getObject();
 
         // значение key
-        // $this->{$this->key()} = $object->{$this->key()}; // TODO понять синтаксис
-        $this->keyValue = $object->{$this->key()};
+        $this->{$this->key()} = $object->{$this->key()}; // TODO понять синтаксис
+        //$this->keyValue = $object->{$this->key()};
 
         // остальные значения
         foreach ($this->fields() as $field) {
@@ -115,38 +108,41 @@ abstract class Model
 
     /**
      * Добавление новой записи в таблицу БД.
-     * 
+     *
      * Все свойства модели должны быть заполнены.
      */
     public function add()
     {
-        if (! $this->validate()) {
+        if (!$this->validate()) {
             echo "bad validation";
             return;
         }
-        
+
         $vals = get_object_vars($this);
 
         // окружение значений пользователя одинарными кавычками
-        array_walk($vals, function(&$value) { $value = "'" . "$value" . "'"; });
+        array_walk($vals, function (&$value) {
+            $value = "'" . "$value" . "'";
+        });
 
         $this->dbo()::insert($this->table(), implode(", ", $this->fields()), implode(", ", $vals))
-          ->getStatement();
+            ->getStatement();
     }
-
 
 
     public function edit()
     {
-        if (! $this->validate()) {
+        if (!$this->validate()) {
             echo "bad validation";
             return;
         }
-        
+
         $vals = get_object_vars($this);
 
         // окружение значений пользователя одинарными кавычками
-        array_walk($vals, function(&$value) { $value = "'" . "$value" . "'"; });
+        array_walk($vals, function (&$value) {
+            $value = "'" . "$value" . "'";
+        });
 
         $data = "";
         $isFirst = true;
@@ -154,23 +150,21 @@ abstract class Model
             if ($isFirst) {
                 $data .= "$field = $vals[$field]";
                 $isFirst = false;
-            }
-            else {
+            } else {
                 $data .= ", $field = $vals[$field]";
             }
         }
 
         $this->dbo()::update($this->table(), $data)
-          ->where("id = $this->keyValue")
-          ->getStatement();
+            ->where("id = $this->keyValue")
+            ->getStatement();
     }
-
 
 
     public function delete()
     {
         $this->dbo()::delete($this->table())
-          ->where("id = $this->keyValue")
-          ->getStatement();
+            ->where("id = $this->keyValue")
+            ->getStatement();
     }
 }
