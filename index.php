@@ -15,17 +15,13 @@ $dotenv->load();
 Db::init();
 
 $user = new User();
-// $user->login = "hello";
-// $user->email = "la@la.la";
-// $user->password = "eopnbpobn";
-$user->selectOne("id = 100");
-Debug::prn($user);
-// $user->password = "Ffffffffffff";
-$user->delete();
 
-
-// $user->delete();
-// $user->selectOne("id = 70");
+// $user->selectOne("id = 100");
+// $user->login = "hello_world";
+// $user->email = "hello@hel.hel";
+// $user->password = "heeeeeeeee";
+// Debug::prn($user);
+// $user->edit();
 
 
 

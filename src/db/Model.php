@@ -2,15 +2,17 @@
 
 namespace Nilixin\Edu\db;
 
+use BadMethodCallException;
 use Nilixin\Edu\debug\Debug;
 use Nilixin\Edu\db\Validation;
+use Nilixin\Edu\exception\InvalidCredentialsException;
 
 abstract class Model
 {
     // Базовые константы
 
 
-    
+
     protected $id;
 
 
@@ -113,7 +115,7 @@ abstract class Model
         $vals = $this->getObjectVals();
 
         foreach ($vals as $val) {
-            if (! isset($val) && empty($val)) {
+            if (! isset($val) || empty($val)) {
                 return true;
             }
         }
@@ -125,31 +127,24 @@ abstract class Model
 
     public function validate()
     {
-        // TODO понасоздавать кучу исключений для вывода ошибок
-
         if (! $this->idle()) {
             if (null == $this->rules()) {
-                return;
+                throw new BadMethodCallException("No rules provided for validation");
             }
 
             foreach ($this->rules() as $attr => $rules) {
-                // Debug::prn($attr);
                 foreach ($rules as $rule => $val) {
-                    // Debug::prn("$rule : $val");
-                    
                     switch ($rule) {
                         
                         // REGEX
                         case 'regex':
                             if ($val == 'plain') {
                                 if (! Validation::regexPlain($this->{$attr})) {
-                                    Debug::prn("bad validation regex plain");
-                                    return false;
+                                    throw new InvalidCredentialsException("Unvalid regex plain");
                                 }
                             }
                             else {
-                                Debug::prn("bad validation regex plain empty");
-                                return false;
+                                throw new InvalidCredentialsException("Undefined regex value");
                             }
                             break;
 
@@ -157,13 +152,11 @@ abstract class Model
                         case 'size':
                             // проверка на то, что определены границы размера
                             if (! isset($val[0]) || empty($val[0]) || ! isset($val[1]) || empty($val[1])) {
-                                Debug::prn("bad validation size borders");
-                                return false;
+                                throw new InvalidCredentialsException("Undefined size values");
                             }
 
                             if (! Validation::size($this->{$attr}, $val[0], $val[1])) {
-                                Debug::prn("bad validation size");
-                                return false;
+                                throw new InvalidCredentialsException("Unvalid size");
                             }
                             break;
 
@@ -171,19 +164,16 @@ abstract class Model
                         case 'filter':
                             if ($val == 'email') {
                                 if (! Validation::filterEmail($this->{$attr})) {
-                                    Debug::prn("bad validation email");
-                                    return false;
+                                    throw new InvalidCredentialsException("Unvalid filter email");
                                 }
                             }
                             else {
-                                Debug::prn("bad validation email empty");
-                                return false;
+                                throw new InvalidCredentialsException("Undefined filter value");
                             }
                             break;
                         
                         default:
-                            Debug::prn("entered default");
-                            return false;
+                            throw new InvalidCredentialsException("Undefined validation rules");
                             break;
                     }
                 }
@@ -231,8 +221,7 @@ abstract class Model
     public function add()
     {
         if (!$this->validate()) {
-            echo "bad validation";
-            return;
+            throw new BadMethodCallException("Bad validation");
         }
 
         $vals = $this->getObjectVals();
@@ -251,14 +240,10 @@ abstract class Model
     public function edit()
     {
         if (!$this->validate()) {
-            echo "bad validation";
-            return;
+            throw new BadMethodCallException("Bad validation");
         }
-        Debug::prn("good validation");
 
         $vals = $this->getObjectVals();
-
-        Debug::prn($vals);
 
         // окружение значений пользователя одинарными кавычками
         array_walk($vals, function (&$value) {
