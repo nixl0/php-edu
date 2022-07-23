@@ -6,7 +6,7 @@ error_reporting(-1);
 ini_set("display_errors", 1);
 
 use Nilixin\Edu\db\Db;
-use Nilixin\Edu\model\User;
+use Nilixin\Edu\model\UserModel;
 use Nilixin\Edu\debug\Debug;
 use Nilixin\Edu\Router;
 
@@ -15,18 +15,25 @@ $dotenv->load();
 
 $router = new Router();
 
-
+$router->get("/", [\Nilixin\Edu\Controller\HomeController::class, "index"])
+       ->get("/user", [\Nilixin\Edu\Controller\UserController::class, "index"])
+       ->get("/user/select", [\Nilixin\Edu\Controller\UserController::class, "select"])
+       ->post("/user/show", [\Nilixin\Edu\Controller\UserController::class, "show"])
+       ->get("/test", [\Nilixin\Edu\Controller\TestController::class, "submit"])
+       ->post("/test/submit", [\Nilixin\Edu\Controller\TestController::class, "store"]);
 
 // $router->register("/", function () {
 //     echo "hello";
 // });
 // $router->register("/user", function () {
-//     $user = new User();
+//     $user = new UserModel();
 //     $user->selectOne("id = 101");
 //     Debug::prn($user);
 // });
 
-echo $router->resolve($_SERVER["REQUEST_URI"]);
+session_start();
+
+echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
 
 
 
@@ -124,7 +131,7 @@ echo $router->resolve($_SERVER["REQUEST_URI"]);
 // USER MODEL SHENANIGANS EXAMPLE
 // Db::init();
 
-// $user = new User();
+// $user = new UserModel();
 
 // $user->selectOne("id = 101");
 // $user->login = "hello_world";

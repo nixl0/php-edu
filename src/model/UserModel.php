@@ -3,10 +3,10 @@
 namespace Nilixin\Edu\model;
 
 use Nilixin\Edu\db\Db;
-use Nilixin\Edu\db\Model;
+use Nilixin\Edu\Model;
 use Nilixin\Edu\db\SoftDelete;
 
-class User extends Model
+class UserModel extends Model
 {
     use SoftDelete;
 

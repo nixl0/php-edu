@@ -1,6 +1,6 @@
 <?php
 
-namespace Nilixin\Edu\db;
+namespace Nilixin\Edu;
 
 use Nilixin\Edu\debug\Debug;
 

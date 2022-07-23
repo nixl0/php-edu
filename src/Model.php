@@ -1,10 +1,11 @@
 <?php
 
-namespace Nilixin\Edu\db;
+namespace Nilixin\Edu;
 
 use BadMethodCallException;
 use Nilixin\Edu\debug\Debug;
-use Nilixin\Edu\db\Validation;
+use Nilixin\Edu\Validation;
+use Nilixin\Edu\db\Db;
 use Nilixin\Edu\exception\InvalidCredentialsException;
 
 abstract class Model
