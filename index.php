@@ -8,20 +8,25 @@ ini_set("display_errors", 1);
 use Nilixin\Edu\db\Db;
 use Nilixin\Edu\model\User;
 use Nilixin\Edu\debug\Debug;
+use Nilixin\Edu\Router;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, ".env.local");
 $dotenv->load();
 
-Db::init();
+$router = new Router();
 
-$user = new User();
 
-// $user->selectOne("id = 100");
-// $user->login = "hello_world";
-// $user->email = "hello@hel.hel";
-// $user->password = "heeeeeeeee";
-// Debug::prn($user);
-// $user->edit();
+
+// $router->register("/", function () {
+//     echo "hello";
+// });
+// $router->register("/user", function () {
+//     $user = new User();
+//     $user->selectOne("id = 101");
+//     Debug::prn($user);
+// });
+
+echo $router->resolve($_SERVER["REQUEST_URI"]);
 
 
 
@@ -113,3 +118,17 @@ $user = new User();
 // DELETE EXAMPLE
 // $result3 = Db::delete("users")->where("id = 460")->getStatement();
 // var_dump($result3);
+
+
+
+// USER MODEL SHENANIGANS EXAMPLE
+// Db::init();
+
+// $user = new User();
+
+// $user->selectOne("id = 101");
+// $user->login = "hello_world";
+// $user->email = "hello@hel.hel";
+// $user->password = "heeeeeeeeex";
+// Debug::prn($user);
+// $user->edit();

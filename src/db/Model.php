@@ -28,13 +28,6 @@ abstract class Model
 
 
 
-    public function key()
-    {
-        return "id";
-    }
-
-
-
     public abstract function fields();
 
 
@@ -58,7 +51,6 @@ abstract class Model
 
     public function __set($property, $value)
     {
-
         if (property_exists($this, $property)) {
             $this->$property = $value;
         }
@@ -137,8 +129,8 @@ abstract class Model
                     switch ($rule) {
                         
                         // REGEX
-                        case 'regex':
-                            if ($val == 'plain') {
+                        case "regex":
+                            if ($val == "plain") {
                                 if (! Validation::regexPlain($this->{$attr})) {
                                     throw new InvalidCredentialsException("Unvalid regex plain");
                                 }
@@ -149,7 +141,7 @@ abstract class Model
                             break;
 
                         // SIZE
-                        case 'size':
+                        case "size":
                             // проверка на то, что определены границы размера
                             if (! isset($val[0]) || empty($val[0]) || ! isset($val[1]) || empty($val[1])) {
                                 throw new InvalidCredentialsException("Undefined size values");
@@ -161,8 +153,8 @@ abstract class Model
                             break;
 
                         // FILTER
-                        case 'filter':
-                            if ($val == 'email') {
+                        case "filter":
+                            if ($val == "email") {
                                 if (! Validation::filterEmail($this->{$attr})) {
                                     throw new InvalidCredentialsException("Unvalid filter email");
                                 }
@@ -203,7 +195,7 @@ abstract class Model
             ->getObject();
 
         // значение key
-        $this->{$this->key()} = $object->{$this->key()};
+        $this->id = $object->id;
 
         // остальные значения
         foreach ($this->fields() as $field) {
@@ -262,10 +254,8 @@ abstract class Model
             }
         }
 
-        $id = $this->{$this->key()};
-
         $this->dbo()::update($this->table(), $data)
-            ->where("id = $id")
+            ->where("id = $this->id")
             ->getStatement();
     }
 
@@ -273,10 +263,8 @@ abstract class Model
 
     public function delete()
     {
-        $id = $this->{$this->key()};
-
         $this->dbo()::delete($this->table())
-            ->where("id = $id")
+            ->where("id = $this->id")
             ->getStatement();
     }
 }

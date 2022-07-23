@@ -14,11 +14,6 @@ class User extends Model
     protected $email;
     protected $password;
 
-    public function dbo()
-    {
-        return Db::init();
-    }
-
     public function table(): string
     {
         return "users";
@@ -32,15 +27,15 @@ class User extends Model
     public function rules()
     {
         return [
-            'login' => [
-                'regex' => 'plain',
-                'size' => [3, 64]
+            "login" => [
+                "regex" => "plain",
+                "size" => [3, 64]
             ],
-            'email' => [
-                'filter' => 'email'
+            "email" => [
+                "filter" => "email"
             ],
-            'password' => [
-                'size' => [6, 128]
+            "password" => [
+                "size" => [6, 128]
             ]
         ];
     }
