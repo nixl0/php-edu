@@ -2,6 +2,9 @@
 
 namespace Nilixin\Edu\Controller;
 
+use Nilixin\Edu\ViewHandler;
+use Nilixin\Edu\model\UserModel;
+
 class UserController
 {
     public function index()
@@ -11,16 +14,19 @@ class UserController
 
     public function select()
     {
-        return '<form action="/user/show" method="POST">
-        <label>Напишите id</label>
-        <input type="text" name="id">
-        </form>';
+        return ViewHandler::make("view/user/UserSelectView.php");
     }
 
     public function show()
     {
         $id = $_POST['id'];
 
-        var_dump($id);
+        $userToShow = new UserModel();
+        $userToShow->selectOne("id = $id");
+
+        return ViewHandler::make("view/user/UserShowView.php", [
+            "login" => "$userToShow->login",
+            "email" => "$userToShow->email"
+        ]);
     }
 }
