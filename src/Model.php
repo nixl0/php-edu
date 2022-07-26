@@ -96,50 +96,26 @@ abstract class Model
 
     public function validate()
     {
-        foreach ($this->rules() as $attr => $rules) {
-            foreach ($rules as $rule => $val) {
-                switch ($rule) {
-                    
-                    // REGEX
-                    case "regex":
-                        if ($val == "plain") {
-                            if (! Validation::regexPlain($this->{$attr})) {
-                                throw new InvalidCredentialsException("Invalid regex plain");
-                            }
-                        }
-                        else {
-                            throw new InvalidCredentialsException("Undefined regex value");
-                        }
-                        break;
+        foreach ($this->fields() as $field) {
+            $keyExists = null;
+            $value = null;
+            $details = null;
 
-                    // SIZE
-                    case "size":
-                        // проверка на то, что определены границы размера
-                        if (! isset($val[0]) || empty($val[0]) || ! isset($val[1]) || empty($val[1])) {
-                            throw new InvalidCredentialsException("Undefined size values");
-                        }
+            // исключение, если среди деталей (правил одного атрибута) нет типа
+            try {
+                $value = $this->{$field};
+                $details = $this->rules()[$field];
+                $keyExists = array_key_exists("type", $details);
+            } catch (\Throwable) {
+                throw new BadMethodCallException("Rules syntax error");
+            }
 
-                        if (! Validation::size($this->{$attr}, $val[0], $val[1])) {
-                            throw new InvalidCredentialsException("Invalid size");
-                        }
-                        break;
-
-                    // FILTER
-                    case "filter":
-                        if ($val == "email") {
-                            if (! Validation::filterEmail($this->{$attr})) {
-                                throw new InvalidCredentialsException("Invalid filter email");
-                            }
-                        }
-                        else {
-                            throw new InvalidCredentialsException("Undefined filter value");
-                        }
-                        break;
-                    
-                    default:
-                        throw new InvalidCredentialsException("Undefined validation rules");
-                        break;
-                }
+            // исключение, если валидация не пройдена успешно
+            if ($keyExists) {
+                Validation::check($value, $details);
+            }
+            else {
+                throw new BadMethodCallException("No type provided");
             }
         }
 

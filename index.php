@@ -15,26 +15,14 @@ $dotenv->load();
 
 session_start();
 
-$user = new UserModel();
+$router = new Router();
 
-$user->edit();
-$user->login = "hello";
-$user->password = "world";
-
-
-
-
-
-
-
-// $router = new Router();
-
-// $router->get("/", [\Nilixin\Edu\controller\HomeController::class, "index"])
-//        ->get("/user", [\Nilixin\Edu\controller\UserController::class, "index"])
-//        ->get("/user/select", [\Nilixin\Edu\controller\UserController::class, "select"])
-//        ->post("/user/show", [\Nilixin\Edu\controller\UserController::class, "show"])
-//        ->get("/test", [\Nilixin\Edu\controller\TestController::class, "submit"])
-//        ->post("/test/submit", [\Nilixin\Edu\controller\TestController::class, "store"]);
+$router->get("/", [\Nilixin\Edu\controller\HomeController::class, "index"])
+       ->get("/user", [\Nilixin\Edu\controller\UserController::class, "index"])
+       ->get("/user/select", [\Nilixin\Edu\controller\UserController::class, "select"])
+       ->post("/user/show", [\Nilixin\Edu\controller\UserController::class, "show"])
+       ->get("/test", [\Nilixin\Edu\controller\TestController::class, "submit"])
+       ->post("/test/submit", [\Nilixin\Edu\controller\TestController::class, "store"]);
 
 // $router->register("/", function () {
 //     echo "hello";
@@ -45,7 +33,7 @@ $user->password = "world";
 //     Debug::prn($user);
 // });
 
-// echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
+echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
 
 
 

@@ -28,14 +28,17 @@ class UserModel extends Model
     {
         return [
             "login" => [
-                "regex" => "plain",
-                "size" => [3, 64]
+                "type" => "login",
+                "min" => 3,
+                "max" => 64
             ],
             "email" => [
-                "filter" => "email"
+                "type" => "email"
             ],
             "password" => [
-                "size" => [6, 128]
+                "type" => "password",
+                "min" => 6,
+                "max" => 128
             ]
         ];
     }
