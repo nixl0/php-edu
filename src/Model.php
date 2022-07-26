@@ -94,86 +94,56 @@ abstract class Model
 
 
 
-    /**
-     * Проверяет свойства на определенность и пустоту
-     *
-     * Возвращает FALSE, если хотя бы одно из свойств не определено или пустое, иначе TRUE.
-     * Лучше использовать как часть метода validate(), который определяется отдельно
-     * в зависимости от соответствующих условий отбора свойств.
-     * 
-     * // TODO переписать описание
-     */
-    public function idle()
-    {
-        $vals = $this->getObjectVals();
-
-        foreach ($vals as $val) {
-            if (! isset($val) || empty($val)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-
     public function validate()
     {
-        if (! $this->idle()) {
-            if (null == $this->rules()) {
-                throw new BadMethodCallException("No rules provided for validation");
-            }
+        foreach ($this->rules() as $attr => $rules) {
+            foreach ($rules as $rule => $val) {
+                switch ($rule) {
+                    
+                    // REGEX
+                    case "regex":
+                        if ($val == "plain") {
+                            if (! Validation::regexPlain($this->{$attr})) {
+                                throw new InvalidCredentialsException("Invalid regex plain");
+                            }
+                        }
+                        else {
+                            throw new InvalidCredentialsException("Undefined regex value");
+                        }
+                        break;
 
-            foreach ($this->rules() as $attr => $rules) {
-                foreach ($rules as $rule => $val) {
-                    switch ($rule) {
-                        
-                        // REGEX
-                        case "regex":
-                            if ($val == "plain") {
-                                if (! Validation::regexPlain($this->{$attr})) {
-                                    throw new InvalidCredentialsException("Unvalid regex plain");
-                                }
-                            }
-                            else {
-                                throw new InvalidCredentialsException("Undefined regex value");
-                            }
-                            break;
+                    // SIZE
+                    case "size":
+                        // проверка на то, что определены границы размера
+                        if (! isset($val[0]) || empty($val[0]) || ! isset($val[1]) || empty($val[1])) {
+                            throw new InvalidCredentialsException("Undefined size values");
+                        }
 
-                        // SIZE
-                        case "size":
-                            // проверка на то, что определены границы размера
-                            if (! isset($val[0]) || empty($val[0]) || ! isset($val[1]) || empty($val[1])) {
-                                throw new InvalidCredentialsException("Undefined size values");
-                            }
+                        if (! Validation::size($this->{$attr}, $val[0], $val[1])) {
+                            throw new InvalidCredentialsException("Invalid size");
+                        }
+                        break;
 
-                            if (! Validation::size($this->{$attr}, $val[0], $val[1])) {
-                                throw new InvalidCredentialsException("Unvalid size");
+                    // FILTER
+                    case "filter":
+                        if ($val == "email") {
+                            if (! Validation::filterEmail($this->{$attr})) {
+                                throw new InvalidCredentialsException("Invalid filter email");
                             }
-                            break;
-
-                        // FILTER
-                        case "filter":
-                            if ($val == "email") {
-                                if (! Validation::filterEmail($this->{$attr})) {
-                                    throw new InvalidCredentialsException("Unvalid filter email");
-                                }
-                            }
-                            else {
-                                throw new InvalidCredentialsException("Undefined filter value");
-                            }
-                            break;
-                        
-                        default:
-                            throw new InvalidCredentialsException("Undefined validation rules");
-                            break;
-                    }
+                        }
+                        else {
+                            throw new InvalidCredentialsException("Undefined filter value");
+                        }
+                        break;
+                    
+                    default:
+                        throw new InvalidCredentialsException("Undefined validation rules");
+                        break;
                 }
             }
-
-            return true;
         }
+
+        return true;
     }
 
 

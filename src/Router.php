@@ -3,6 +3,7 @@
 namespace Nilixin\Edu;
 
 use Exception;
+use Nilixin\Edu\debug\Debug;
 
 class Router
 {
@@ -13,7 +14,7 @@ class Router
         return $this->routes;
     }
 
-    public function register(string $requestMethod, string $route, callable|array $action)
+    private function register(string $requestMethod, string $route, callable|array $action)
     {
         $this->routes[$requestMethod][$route] = $action;
 

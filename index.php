@@ -13,27 +13,39 @@ use Nilixin\Edu\Router;
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, ".env.local");
 $dotenv->load();
 
-$router = new Router();
+session_start();
 
-$router->get("/", [\Nilixin\Edu\Controller\HomeController::class, "index"])
-       ->get("/user", [\Nilixin\Edu\Controller\UserController::class, "index"])
-       ->get("/user/select", [\Nilixin\Edu\Controller\UserController::class, "select"])
-       ->post("/user/show", [\Nilixin\Edu\Controller\UserController::class, "show"])
-       ->get("/test", [\Nilixin\Edu\Controller\TestController::class, "submit"])
-       ->post("/test/submit", [\Nilixin\Edu\Controller\TestController::class, "store"]);
+$user = new UserModel();
+
+$user->edit();
+$user->login = "hello";
+$user->password = "world";
+
+
+
+
+
+
+
+// $router = new Router();
+
+// $router->get("/", [\Nilixin\Edu\controller\HomeController::class, "index"])
+//        ->get("/user", [\Nilixin\Edu\controller\UserController::class, "index"])
+//        ->get("/user/select", [\Nilixin\Edu\controller\UserController::class, "select"])
+//        ->post("/user/show", [\Nilixin\Edu\controller\UserController::class, "show"])
+//        ->get("/test", [\Nilixin\Edu\controller\TestController::class, "submit"])
+//        ->post("/test/submit", [\Nilixin\Edu\controller\TestController::class, "store"]);
 
 // $router->register("/", function () {
 //     echo "hello";
 // });
-// $router->register("/user", function () {
+// $router->get("/blob", function () {
 //     $user = new UserModel();
 //     $user->selectOne("id = 101");
 //     Debug::prn($user);
 // });
 
-session_start();
-
-echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
+// echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
 
 
 

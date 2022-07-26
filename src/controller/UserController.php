@@ -1,6 +1,6 @@
 <?php
 
-namespace Nilixin\Edu\Controller;
+namespace Nilixin\Edu\controller;
 
 use Nilixin\Edu\ViewHandler;
 use Nilixin\Edu\model\UserModel;
