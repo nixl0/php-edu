@@ -17,12 +17,18 @@ session_start();
 
 $router = new Router();
 
-$router->get("/", [\Nilixin\Edu\controller\HomeController::class, "index"])
-       ->get("/user", [\Nilixin\Edu\controller\UserController::class, "index"])
-       ->get("/user/select", [\Nilixin\Edu\controller\UserController::class, "select"])
-       ->post("/user/show", [\Nilixin\Edu\controller\UserController::class, "show"])
-       ->get("/test", [\Nilixin\Edu\controller\TestController::class, "submit"])
-       ->post("/test/submit", [\Nilixin\Edu\controller\TestController::class, "store"]);
+$router->get("/", [\Nilixin\Edu\controller\HomeController::class, "index"]);
+
+$router->group("/user")->get("", [\Nilixin\Edu\controller\UserController::class, "index"])
+                       ->get("/select", [\Nilixin\Edu\controller\UserController::class, "select"])
+                       ->post("/show", [\Nilixin\Edu\controller\UserController::class, "show"])
+       ->group("/test")->get("", [\Nilixin\Edu\controller\TestController::class, "submit"])
+                       ->post("/submit", [\Nilixin\Edu\controller\TestController::class, "store"])
+       ->group("/other")->subgroup("/one")
+                        ->subgroup("/two")
+                        ->subgroup("/three")->get("", [\Nilixin\Edu\controller\HomeController::class, "other"]);
+
+$router->group("")->get("/test1", [\Nilixin\Edu\controller\TestController::class, "extended"]);
 
 // $router->register("/", function () {
 //     echo "hello";
@@ -35,12 +41,12 @@ $router->get("/", [\Nilixin\Edu\controller\HomeController::class, "index"])
 
 echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
 
-$user = new UserModel();
-$user->login = "wotata";
-$user->email = "wota@wota.com";
-$user->password = "wotatas";
+// $user = new UserModel();
+// $user->login = "wotata";
+// $user->email = "wota@wota.com";
+// $user->password = "wotatas";
 
-$user->add();
+// $user->add();
 
 
 

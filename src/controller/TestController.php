@@ -23,4 +23,9 @@ class TestController
 
         var_dump($text);
     }
+
+    public function extended()
+    {
+        var_dump("test1");
+    }
 }

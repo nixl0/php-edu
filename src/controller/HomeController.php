@@ -10,4 +10,9 @@ class HomeController
     {
         return ViewHandler::make("view/HomeView.php", ["hello" => "world"]);
     }
+
+    public function other()
+    {
+        return ViewHandler::make("view/HomeView.php", ["hello" => "other"]);
+    }
 }

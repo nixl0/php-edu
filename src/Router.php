@@ -8,15 +8,28 @@ use Nilixin\Edu\debug\Debug;
 class Router
 {
     private array $routes;
+    private $prefix;
 
-    public function getRoutes()
+    public function group(string $prefix)
     {
-        return $this->routes;
+        $this->prefix = $prefix;
+
+        return $this;
     }
+
+    public function subgroup(string $prefix)
+    {
+        $this->prefix .= $prefix;
+
+        return $this;
+    }
+
 
     private function register(string $requestMethod, string $route, callable|array $action)
     {
-        $this->routes[$requestMethod][$route] = $action;
+        $prefixedRoute = $this->prefix . $route;
+        $this->routes[$requestMethod][$prefixedRoute] = $action;
+        // Debug::prn($this->routes);
 
         return $this;
     }
