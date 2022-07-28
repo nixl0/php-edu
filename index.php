@@ -35,6 +35,13 @@ $router->get("/", [\Nilixin\Edu\controller\HomeController::class, "index"])
 
 echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
 
+$user = new UserModel();
+$user->login = "wotata";
+$user->email = "wota@wota.com";
+$user->password = "wotatas";
+
+$user->add();
+
 
 
 

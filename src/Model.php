@@ -4,52 +4,36 @@ namespace Nilixin\Edu;
 
 use BadMethodCallException;
 use Nilixin\Edu\debug\Debug;
-use Nilixin\Edu\Validation;
 use Nilixin\Edu\db\Db;
 use Nilixin\Edu\exception\InvalidCredentialsException;
 
 abstract class Model
 {
     // Базовые константы
-
-
-
+    
     protected $id;
-
-
-
+    
     public function dbo()
     {
         return Db::init();
     }
 
-
-
     public abstract function table();
-
-
-
     public abstract function fields();
-
-
-
+    public abstract function validator();
     public abstract function rules();
 
 
 
     // Магические методы
-
-
-
+    
     public function __get($property)
     {
         if (property_exists($this, $property)) {
             return $this->$property;
         }
     }
-
-
-
+    
     public function __set($property, $value)
     {
         if (property_exists($this, $property)) {
@@ -58,9 +42,7 @@ abstract class Model
 
         return $this;
     }
-
-
-
+    
     public function __toString()
     {
         $properties = get_object_vars($this);
@@ -96,6 +78,10 @@ abstract class Model
 
     public function validate()
     {
+        if (empty($this->rules()) || empty($this->fields())) {
+            return false;
+        }
+
         foreach ($this->fields() as $field) {
             $keyExists = null;
             $value = null;
@@ -112,7 +98,7 @@ abstract class Model
 
             // исключение, если валидация не пройдена успешно
             if ($keyExists) {
-                Validation::check($value, $details);
+                $this->validator()::check($value, $details);
             }
             else {
                 throw new BadMethodCallException("No type provided");
@@ -169,6 +155,8 @@ abstract class Model
         array_walk($vals, function (&$value) {
             $value = "'" . "$value" . "'";
         });
+
+        Debug::dd("STOP");
 
         $this->dbo()::insert($this->table(), implode(", ", $this->fields()), implode(", ", $vals))
             ->getStatement();

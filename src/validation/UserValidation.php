@@ -1,11 +1,12 @@
 <?php
 
-namespace Nilixin\Edu;
+namespace Nilixin\Edu\validation;
 
 use Nilixin\Edu\debug\Debug;
 use Nilixin\Edu\exception\InvalidCredentialsException;
+use Nilixin\Edu\ValidationInterface;
 
-class Validation
+class UserValidation implements ValidationInterface
 {
     public static function check($value, $details)
     {
@@ -47,8 +48,6 @@ class Validation
         }
     }
 
-
-
     private static function size($input, $min, $max)
     {
         if (strlen($input) > $min && strlen($input) < $max) {
@@ -58,8 +57,6 @@ class Validation
             return false;
         }
     }
-
-    
     
     private static function filterEmail($input)
     {
@@ -70,6 +67,4 @@ class Validation
             return false;
         }
     }
-
-
 }
