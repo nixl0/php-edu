@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var $hello
+ */
+?>
+
 <html>
 <head>
     <title>Hello</title>
@@ -5,7 +11,5 @@
 <body>
     <h1>Домашняя страница</h1>
     <h1><?= $hello ?></h1>
-    <!-- <h1>Привет {{login}}</h1>
-    <p>Ваша почта {{email}}</p> -->
 </body>
 </html>

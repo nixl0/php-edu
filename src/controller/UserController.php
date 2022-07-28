@@ -14,7 +14,7 @@ class UserController
 
     public function select()
     {
-        return ViewHandler::make("view/user/UserSelectView.php");
+        return ViewHandler::make("view/user/userSelectView.php");
     }
 
     public function show()
@@ -24,7 +24,7 @@ class UserController
         $userToShow = new UserModel();
         $userToShow->selectOne("id = $id");
 
-        return ViewHandler::make("view/user/UserShowView.php", [
+        return ViewHandler::make("view/user/userShowView.php", [
             "login" => "$userToShow->login",
             "email" => "$userToShow->email"
         ]);

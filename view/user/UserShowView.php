@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var $login
+ * @var $email
+ */
+?>
+
 <html>
 <head>
     <title>Hello</title>

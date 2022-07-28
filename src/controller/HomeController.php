@@ -8,11 +8,11 @@ class HomeController
 {
     public function index()
     {
-        return ViewHandler::make("view/HomeView.php", ["hello" => "world"]);
+        return ViewHandler::make("view/homeView.php", ["hello" => "world"]);
     }
 
     public function other()
     {
-        return ViewHandler::make("view/HomeView.php", ["hello" => "other"]);
+        return ViewHandler::make("view/homeView.php", ["hello" => "other"]);
     }
 }
