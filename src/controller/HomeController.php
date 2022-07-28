@@ -13,6 +13,6 @@ class HomeController
 
     public function other()
     {
-        return ViewHandler::make("view/homeView.php", ["hello" => "other"]);
+        return ViewHandler::make("view/homeView.php", ["hello" => "other"])->layout("view/baseView.php");
     }
 }
