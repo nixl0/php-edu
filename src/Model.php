@@ -98,6 +98,10 @@ abstract class Model
 
             // исключение, если валидация не пройдена успешно
             if ($keyExists) {
+                if (! empty($this->validator())) {
+                    throw new BadMethodCallException("No validator provided");
+                }
+
                 $this->validator()::check($value, $details);
             }
             else {
