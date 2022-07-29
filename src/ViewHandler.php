@@ -38,7 +38,7 @@ class ViewHandler
         return (string) ob_get_clean();
     }
 
-    public function layout(string $layoutFile = "")
+    public function layout(string $layoutFile)
     {
         if (! file_exists($this->view) || ! file_exists($layoutFile)) {
             throw new ViewNotFoundException();
