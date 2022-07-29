@@ -21,7 +21,7 @@ abstract class Model
     public abstract function table();
     public abstract function fields();
     public abstract function validator();
-    public abstract function rules();
+    public abstract function validationRules();
 
 
 
@@ -78,35 +78,22 @@ abstract class Model
 
     public function validate()
     {
-        if (empty($this->rules()) || empty($this->fields())) {
+        if (empty($this->fields())) {
             return false;
         }
 
         foreach ($this->fields() as $field) {
-            $keyExists = null;
             $value = null;
             $details = null;
 
-            // исключение, если среди деталей (правил одного атрибута) нет типа
-            try {
-                $value = $this->{$field};
-                $details = $this->rules()[$field];
-                $keyExists = array_key_exists("type", $details);
-            } catch (\Throwable) {
-                throw new BadMethodCallException("Rules syntax error");
+            $value = $this->{$field};
+            $details = $this->validationRules()[$field];
+
+            if (empty($this->validator())) {
+                throw new BadMethodCallException("No validator provided");
             }
 
-            // исключение, если валидация не пройдена успешно
-            if ($keyExists) {
-                if (! empty($this->validator())) {
-                    throw new BadMethodCallException("No validator provided");
-                }
-
-                $this->validator()::check($value, $details);
-            }
-            else {
-                throw new BadMethodCallException("No type provided");
-            }
+            $this->validator()::check($value, $details);
         }
 
         return true;

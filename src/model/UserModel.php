@@ -29,19 +29,18 @@ class UserModel extends Model
         return UserValidation::class;
     }
 
-    public function rules()
+    public function validationRules()
     {
         return [
             "login" => [
-                "type" => "login",
+                "checkif" => "plain",
                 "min" => 3,
                 "max" => 64
             ],
             "email" => [
-                "type" => "email"
+                "checkif" => "email"
             ],
             "password" => [
-                "type" => "password",
                 "min" => 6,
                 "max" => 128
             ]
