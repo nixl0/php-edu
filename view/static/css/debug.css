@@ -1,0 +1,15 @@
+.debug-prn {
+    background: palegreen; 
+    font-family: monospace; 
+    font-weight: bold; 
+    border: 1px solid black; 
+    padding: 2px;
+}
+
+.debug-dd {
+    background: rebeccapurple; 
+    font-family: monospace; 
+    font-weight: bold; 
+    border: 1px solid black; 
+    padding: 2px;
+}
