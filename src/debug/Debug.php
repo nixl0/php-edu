@@ -6,14 +6,14 @@ class Debug
 {
     public static function prn($content)
     {
-        echo '<pre class="debug-prn">';
+        echo '<pre class="debug debug-prn">';
         print_r($content);
         echo '</pre>';
     }
 
     public static function dd($content)
     {
-        echo '<pre class="debug-dd">';
+        echo '<pre class="debug debug-dd">';
         print_r($content);
         echo '</pre>';
         die();

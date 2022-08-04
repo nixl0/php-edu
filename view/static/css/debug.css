@@ -1,15 +1,17 @@
+.debug {
+    max-width: 1200px;
+    font-size: 16px;
+    font-family: monospace;
+    font-weight: bold;
+    margin: 15px 0px 0px 15px;
+    padding: 15px 0px 0px 15px;
+    border: 2px dashed black;
+}
+
 .debug-prn {
-    background: palegreen; 
-    font-family: monospace; 
-    font-weight: bold; 
-    border: 1px solid black; 
-    padding: 2px;
+    background: palegreen;
 }
 
 .debug-dd {
     background: rebeccapurple; 
-    font-family: monospace; 
-    font-weight: bold; 
-    border: 1px solid black; 
-    padding: 2px;
 }
