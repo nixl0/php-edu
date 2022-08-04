@@ -87,7 +87,7 @@ class Db
     {
         $db = self::init();
 
-        $db->query .= " FROM $table";
+        $db->query .= " FROM \"$table\"";
 
         return $db;
     }
