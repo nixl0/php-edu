@@ -3,6 +3,7 @@
 namespace Nilixin\Edu\model;
 
 use Nilixin\Edu\Model;
+use Nilixin\Edu\db\Db;
 use Nilixin\Edu\db\SoftDelete;
 use Nilixin\Edu\validation\UserValidation;
 
@@ -27,6 +28,13 @@ class UserModel extends Model
     public function validator()
     {
         return UserValidation::class;
+    }
+
+    public static function getUserMaxID($alias = 'max') {
+        $maxId = Db::select("MAX(id) as ".$alias)
+            ->from("user")
+            ->fetch();
+        return $maxId[$alias];
     }
 
     public function rules()

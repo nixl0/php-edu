@@ -11,6 +11,13 @@ class UserValidation implements ValidationInterface
     public static function check($value, $details)
     {
         switch ($details["type"]) { // type
+            case "id":
+                if(!self::nSize($value, $details["min"], $details["max"])) {
+                    throw new InvalidCredentialsException("User ID is out of size");
+                    return false;
+                }
+                return true;
+
             case "login":
                 if (! self::regexPlain($value)){
                     if (! self::size($value, $details["min"], $details["max"])) {
@@ -56,6 +63,11 @@ class UserValidation implements ValidationInterface
         else {
             return false;
         }
+    }
+
+    private static function nSize(int $input, int $min, int $max)
+    {
+        return $input > $min && $input < $max;
     }
     
     private static function filterEmail($input)

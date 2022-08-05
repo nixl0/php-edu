@@ -3,7 +3,7 @@
 namespace Nilixin\Edu\controller;
 
 use Nilixin\Edu\ViewHandler;
-use Nixilin\Edu\validation\UserValidation;
+use Nilixin\Edu\validation\UserValidation;
 use Nilixin\Edu\model\UserModel;
 
 class UserController
@@ -20,7 +20,20 @@ class UserController
 
     public function show()
     {
-        $id = $_POST['id'];
+        $validation = UserValidation::class;
+
+        $id = (int) $_POST['id'];
+
+        $maxId = UserModel::getUserMaxID();
+        $checkId = $validation::check(
+            $id, [
+                'type' => 'id',
+                'min' => 0,
+                'max' => $maxId + 1
+            ]
+        );
+
+        if(!$checkId) return;
 
         $userToShow = new UserModel();
         $userToShow->selectOne("id = $id");
