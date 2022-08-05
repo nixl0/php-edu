@@ -3,6 +3,7 @@
 namespace Nilixin\Edu\controller;
 
 use Nilixin\Edu\ViewHandler;
+use Nixilin\Edu\validation\UserValidation;
 use Nilixin\Edu\model\UserModel;
 
 class UserController
@@ -14,7 +15,7 @@ class UserController
 
     public function select()
     {
-        return ViewHandler::make("view/user/userSelectView.php");
+        return ViewHandler::make("view/user/userSelectView.php")->layout('view/baseView.php');
     }
 
     public function show()

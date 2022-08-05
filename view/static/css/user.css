@@ -1,0 +1,17 @@
+.user-select-form {
+    margin: 25px 0px 0px 15px;
+    max-width: 400px;
+    display: flex;
+}
+.user-select-form__input-ID {
+    margin-left: 5px;
+}
+.user-select-form__submit-button {
+    width: 90px;
+    height: 25px;
+    margin: 15px 0px 0px 5px;
+}
+.user-select-form_column {
+    flex-direction: column;
+    display: flex;
+}
