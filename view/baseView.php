@@ -10,12 +10,12 @@
             font-family: sans-serif;
         }
     </style>
-    <title>{{ title }}</title>
+    <title>{% title %}</title>
 </head>
 <body>
     <h1>This is baseView</h1>
 
-    {{ body }}
+    {% body %}
 
     <script src="static/js/script.js"></script>
 </body>

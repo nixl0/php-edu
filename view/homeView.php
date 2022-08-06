@@ -5,9 +5,9 @@
 ?>
 
 
-{{ title }}Hello{{ /title }}
+{% title %}Hello{% /title %}
 
-{{ body }}
+{% body %}
 <h1>Домашняя страница</h1>
 <h1><?= $hello ?></h1>
-{{ /body }}
+{% /body %}

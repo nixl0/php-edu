@@ -2,6 +2,7 @@
 
 namespace Nilixin\Edu;
 
+use BadMethodCallException;
 use Exception;
 use Nilixin\Edu\debug\Debug;
 
@@ -10,9 +11,13 @@ class Router
     private array $routes;
     private $prefix;
 
-    public function group(string $prefix)
+    public function group(array $params)
     {
-        $this->prefix = $prefix;
+        if (! array_key_exists('prefix', $params))
+            throw new BadMethodCallException('Bad params array when grouping URLs');
+        $this->prefix = $params['prefix'];
+        
+        // TODO поддержка middleware
 
         return $this;
     }

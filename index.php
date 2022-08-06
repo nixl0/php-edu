@@ -19,16 +19,16 @@ $router = new Router();
 
 $router->get("/", [\Nilixin\Edu\controller\HomeController::class, "index"]);
 
-$router->group("/user")->get("", [\Nilixin\Edu\controller\UserController::class, "index"])
+$router->group(["prefix" => "/user"])->get("", [\Nilixin\Edu\controller\UserController::class, "index"])
                        ->get("/select", [\Nilixin\Edu\controller\UserController::class, "select"])
                        ->post("/show", [\Nilixin\Edu\controller\UserController::class, "show"])
-       ->group("/test")->get("", [\Nilixin\Edu\controller\TestController::class, "submit"])
+       ->group(["prefix" => "/test"])->get("", [\Nilixin\Edu\controller\TestController::class, "submit"])
                        ->post("/submit", [\Nilixin\Edu\controller\TestController::class, "store"])
-       ->group("/other")->subgroup("/one")
+       ->group(["prefix" => "/other"])->subgroup("/one")
                         ->subgroup("/two")
                         ->subgroup("/three")->get("", [\Nilixin\Edu\controller\HomeController::class, "other"]);
 
-$router->group("")->get("/test1", [\Nilixin\Edu\controller\TestController::class, "extended"]);
+$router->group(["prefix" => ""])->get("/test1", [\Nilixin\Edu\controller\TestController::class, "extended"]);
 
 // $router->register("/", function () {
 //     echo "hello";

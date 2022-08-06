@@ -26,6 +26,6 @@ class UserController
         $userToShow->selectOne("id = $id");
         $userDto = UserDto::load($userToShow);
 
-        return ViewHandler::make("view/user/userShowView.php", ['user' => $userDto])->layout("view/baseView.php");
+        return ViewHandler::make("view/user/userShowView.php", ['user' => $userDto]);
     }
 }

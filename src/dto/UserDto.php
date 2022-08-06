@@ -9,9 +9,7 @@ class UserDto
     public $password;
 
     public function __construct()
-    {
-
-    }
+    { }
 
     /**
      * @param $data
