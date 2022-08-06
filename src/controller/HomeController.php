@@ -11,11 +11,7 @@ class HomeController
 {
     public function index()
     {
-        $user = new UserModel();
-        $user->selectOne("id = 1");
-        $userDto = UserDto::load($user);
-
-        return ViewHandler::make("view/homeView.php", ['user' => $userDto])->layout("view/baseView.php");
+        return ViewHandler::make("view/homeView.php", ["hello" => "world"]);
     }
 
     public function other()

@@ -1,7 +1,6 @@
 <?php
 /**
- * @var $login
- * @var $email
+ * @var $userDto
  */
 ?>
 
@@ -12,7 +11,6 @@
 <body>
     <h1>Юзер</h1>
     
-    <h1>Привет <?= $login ?></h1>
-    <p>Ваша почта <?= $email ?></p>
+    <h1>Привет {{ user }}</h1>
 </body>
 </html>

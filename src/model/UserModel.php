@@ -16,7 +16,7 @@ class UserModel extends Model
 
     public function table(): string
     {
-        return "user";
+        return "users";
     }
 
     public function fields(): array
