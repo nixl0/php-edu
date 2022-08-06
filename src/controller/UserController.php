@@ -24,8 +24,13 @@ class UserController
 
         $userToShow = new UserModel();
         $userToShow->selectOne("id = $id");
-        $userDto = UserDto::load($userToShow);
+        // $userDto = UserDto::load($userToShow);
 
-        return ViewHandler::make("view/user/userShowView.php", ['user' => $userDto]);
+        // return ViewHandler::make("view/user/userShowView.php", ['user' => $userDto])->layout("view/baseView.php"); // TODO добавить поддержку передачи объектов
+        return ViewHandler::make("view/user/userShowView.php", [
+            'login' => $userToShow->login,
+            'email' => $userToShow->email,
+            'password' => $userToShow->password,
+        ])->layout("view/baseView.php");
     }
 }

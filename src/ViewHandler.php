@@ -29,13 +29,20 @@ class ViewHandler
             throw new ViewNotFoundException();
         }
 
-        extract($this->params); // TODO поддержку передачи переменных делать тут
+        extract($this->params);
 
         ob_start();
 
         include $this->view;
 
-        return (string) ob_get_clean();
+        // поиск переменных
+        $ob = (string) ob_get_contents();
+
+        $ob = $this->replaceVariable($ob);
+
+        ob_clean();
+
+        return $ob;
     }
 
     public function layout(string $layoutFile)
@@ -48,13 +55,21 @@ class ViewHandler
 
         ob_start();
         
+        $dirtyLayout = $this->replaceInLayout($layoutFile);
+        echo $this->replaceVariable($dirtyLayout);
+
+        return (string) ob_get_clean();
+    }
+
+    function replaceInLayout($layout)
+    {
         // поиск переменных в файле разметки
-        $layoutContents = file_get_contents($layoutFile);
-        preg_match_all("/({%)\s+[A-Za-z]*\s+(%})/", $layoutContents, $layoutMatches);
+        $layoutContents = file_get_contents($layout);
+        preg_match_all("/[{][%]\s+[A-Za-z]*\s+[%][}]/", $layoutContents, $layoutMatches);
 
         // поиск переменных в файле представления
         $viewContents = file_get_contents($this->view);
-        preg_match_all("/({%)\s+[\S][A-Za-z]*\s+(%})/", $viewContents, $viewMatches);
+        preg_match_all("/[{][%]\s+[\S][A-Za-z]*\s+[%][}]/", $viewContents, $viewMatches);
 
         // очистка скобок до переменных
         foreach ($layoutMatches[0] as $key => $match) {
@@ -97,10 +112,27 @@ class ViewHandler
             $layoutContents = str_replace("{% $match %}", $substrings[$key], $layoutContents);
         }
 
-        // TODO output buffer всё ещё работает или нет?
-        echo $layoutContents;
+        return $layoutContents;
+    }
 
-        return (string) ob_get_clean();
+    function replaceVariable($layout)
+    {
+        // по каждой переданной переменной
+        foreach ($this->params as $key => $value) {
+            // исключение, если буфер не содержит данную переменную
+            if (! str_contains($layout, "{{ $key }}")) {
+                throw new Exception("Not enough variables or wrong formatting");
+            }
+
+            // if (preg_match("/[{][{][\s]+($key)[.][A-Za-z]+[\s]+[}][}]/", $layout)) {
+            //     throw new Exception("Not enough variables or wrong formatting");
+            // }
+
+            // замена переменной
+            $layout = str_replace("{{ $key }}", $value, $layout);
+        }
+
+        return $layout;
     }
 
     function getStringBetween($string, $start, $end){

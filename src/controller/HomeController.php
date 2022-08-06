@@ -11,7 +11,7 @@ class HomeController
 {
     public function index()
     {
-        return ViewHandler::make("view/homeView.php", ["hello" => "world"]);
+        return ViewHandler::make("view/homeView.php", ["hello" => "world"])->layout("view/baseView.php");
     }
 
     public function other()

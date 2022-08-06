@@ -1,18 +1,19 @@
-<?php
-/**
- * @var $user
- */
-?>
 
-<html>
-<head>
-    <title>Hello</title>
-</head>
-<body>
+
+
+
+
+
+
+
+{% title %}Show{% /title %}
+
+{% body %}
+
     <h1>Юзер</h1>
     
-    <h3>Имя пользователя <?= $user->login ?></h3>
-    <h3>Почта <?= $user->email ?></h3>
-    <h3>Пароль <?= $user->password ?></h3>
-</body>
-</html>
+    <h3>Имя пользователя {{ login }}</h3>
+    <h3>Почта {{ email }}</h3>
+    <h3>Пароль {{ password }}</h3>
+
+{% /body %}
