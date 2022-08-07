@@ -11,11 +11,13 @@ class HomeController
 {
     public function index()
     {
-        return ViewHandler::make("view/homeView.php", ["hello" => "world"])->layout("view/baseView.php");
+        return ViewHandler::make("view/homeView.php")
+                          ->setVariables(["hello" => "world"])
+                          ->setLayout("view/baseView.php");
     }
 
     public function other()
     {
-        return ViewHandler::make("view/homeView.php", ["hello" => "other"])->layout("view/baseView.php");
+        return ViewHandler::make("view/homeView.php", ["hello" => "other"])->setLayout("view/baseView.php");
     }
 }

@@ -1,10 +1,3 @@
-<?php
-/**
- * @var $hello
- */
-?>
-
-
 {% title %}Hello{% /title %}
 
 {% body %}

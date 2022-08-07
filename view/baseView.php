@@ -10,12 +10,12 @@
             font-family: sans-serif;
         }
     </style>
-    <title>{% title %}</title>
+    <title>{% title %}Default{% /title %}</title>
 </head>
 <body>
     <h1>This is baseView</h1>
 
-    {% body %}
+    {% body %}Default{% /body %}
 
     <script src="static/js/script.js"></script>
 </body>

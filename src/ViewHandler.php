@@ -8,9 +8,13 @@ use Nilixin\Edu\debug\Debug;
 
 class ViewHandler
 {
-    public function __construct(
+    public static $instance;
+    private $product;
+    
+    private function __construct(
         protected string $view,
-        protected array $params = [])
+        protected array $variables = [],
+        protected string $layout = "")
     { }
 
     public function __toString()
@@ -18,124 +22,154 @@ class ViewHandler
         return $this->render();
     }
 
-    public static function make(string $view, array $params = [])
+
+
+    public static function make(string $viewFile)
     {
-        return new static($view, $params);
+        if (! file_exists($viewFile)) {
+            throw new Exception("View file not found");
+        }
+        
+        self::$instance = new static($viewFile);
+        
+        return self::$instance;
     }
+
+
+
+    public function setVariables(array $variables = [])
+    {
+        if (empty($variables)) {
+            throw new Exception("Variables array is empty");
+        }
+
+        $this->variables = $variables;
+
+        return $this;
+    }
+
+
+
+    public function setLayout(string $layoutFile)
+    {
+        if (! file_exists($layoutFile)) {
+            throw new Exception("Layout file not found");
+        }
+
+        $this->layout = $layoutFile;
+
+        return $this;
+    }
+
+
 
     public function render()
     {
-        if (! file_exists($this->view)) {
-            throw new ViewNotFoundException();
-        }
-
-        extract($this->params);
-
         ob_start();
 
-        include $this->view;
+        $this->product = file_get_contents($this->view);
 
-        // поиск переменных
-        $ob = (string) ob_get_contents();
-
-        $ob = $this->replaceVariable($ob);
-
-        ob_clean();
-
-        return $ob;
-    }
-
-    public function layout(string $layoutFile)
-    {
-        if (! file_exists($this->view) || ! file_exists($layoutFile)) {
-            throw new ViewNotFoundException();
+        if (! empty($this->layout)) {
+            $this->product = $this->replaceInLayout();
         }
 
-        extract($this->params);
+        if (! empty($this->variables)) {
+            $this->product = $this->replaceVariables();
+        }
 
-        ob_start();
-        
-        $dirtyLayout = $this->replaceInLayout($layoutFile);
-        echo $this->replaceVariable($dirtyLayout);
+        echo $this->product;
 
         return (string) ob_get_clean();
     }
 
-    function replaceInLayout($layout)
+
+
+    private function replaceInLayout()
     {
         // поиск переменных в файле разметки
-        $layoutContents = file_get_contents($layout);
-        preg_match_all("/[{][%]\s+[A-Za-z]*\s+[%][}]/", $layoutContents, $layoutMatches);
+        $layoutContents = file_get_contents($this->layout);
+        preg_match_all("/[{][%]\s+[\S][A-Za-z]*\s+[%][}]/", $layoutContents, $layoutTags);
 
         // поиск переменных в файле представления
         $viewContents = file_get_contents($this->view);
-        preg_match_all("/[{][%]\s+[\S][A-Za-z]*\s+[%][}]/", $viewContents, $viewMatches);
+        preg_match_all("/[{][%]\s+[\S][A-Za-z]*\s+[%][}]/", $viewContents, $viewTags);
 
-        // очистка скобок до переменных
-        foreach ($layoutMatches[0] as $key => $match) {
-            $layoutMatches[0]["$key"] = preg_replace("/[{}%\s]*/", "", $match);
-        }
-        foreach ($viewMatches[0] as $key => $match) {
-            $viewMatches[0]["$key"] = preg_replace("/[{}%\s]*/", "", $match);
-        }
+        // проверка на соответствие переменных
+        // исключение, если не найдено пар переменных в файлах разметки и представления
+        foreach ($layoutTags[0] as $layoutTag) {
+            $found = false;
 
-        // проверки на соответствие переменных и на их закрытие
-        foreach ($layoutMatches[0] as $match) {
-            if (! in_array($match, $viewMatches[0])) {
-                throw new Exception("Not enough variables");
-            }
-            else {
-                if (! in_array("/$match", $viewMatches[0])) {
-                    throw new Exception("Variable blocks aren't closed");
+            foreach ($viewTags[0] as $viewTag) {
+                if ($layoutTag == $viewTag) {
+                    $found = true;
+
+                    break;
                 }
             }
-        }
 
-        // удаление закрывающих тегов из viewMatches[0]
-        foreach ($viewMatches[0] as $key => $match) {
-            if (str_contains($match, "/")) {
-                unset($viewMatches[0][$key]);
+            if (! $found) {
+                throw new Exception("Not enough tags or wrong formatting");
             }
         }
 
-        // сохранение блоков, которыми будут заменяться переменные
-        $substringKey = 0;
-        foreach ($viewMatches[0] as $key => $match) {
-            if (! str_contains($match, "/")) {
-                $substrings[$substringKey] = $this->getStringBetween($viewContents, "{% $match %}", "{% /$match %}");
-                $substringKey++;
-            }
-        }
+        // замена тегов и строки внутри них в файле разметки на контент внутри тегов в файле представления
+        for ($i = 0; $i < count($layoutTags[0]); $i += 2) {
+            $openingTag = $layoutTags[0][$i];
+            $closingTag = $layoutTags[0][$i + 1];
 
-        // замена переменных сохранёнными блоками
-        foreach ($layoutMatches[0] as $key => $match) {
-            $layoutContents = str_replace("{% $match %}", $substrings[$key], $layoutContents);
+            $oldString = $this->getStringBetween($layoutContents, $openingTag, $closingTag);
+            $newString = $this->getStringBetween($viewContents, $openingTag, $closingTag);
+
+            $layoutContents = str_replace($openingTag . $oldString . $closingTag, $newString, $layoutContents);
         }
 
         return $layoutContents;
     }
 
-    function replaceVariable($layout)
+
+
+    private function replaceVariables()
     {
-        // по каждой переданной переменной
-        foreach ($this->params as $key => $value) {
-            // исключение, если буфер не содержит данную переменную
-            if (! str_contains($layout, "{{ $key }}")) {
-                throw new Exception("Not enough variables or wrong formatting");
-            }
+        $cleanProduct = $this->product;
 
-            // if (preg_match("/[{][{][\s]+($key)[.][A-Za-z]+[\s]+[}][}]/", $layout)) {
-            //     throw new Exception("Not enough variables or wrong formatting");
-            // }
-
-            // замена переменной
-            $layout = str_replace("{{ $key }}", $value, $layout);
+        preg_match_all("/[{][{]\s+[\S][A-Za-z->]*\s+[}][}]/", $cleanProduct, $callableVariables);
+        
+        $cleanVariables = array();
+        foreach ($callableVariables[0] as $callableVariable) {
+            array_push($cleanVariables, preg_replace("/[{}\s]*/", "", $callableVariable));
         }
 
-        return $layout;
+        // TODO не працюе
+        extract($this->variables);
+        Debug::val($user->login);
+        
+        foreach ($cleanVariables as $cleanVariable) {
+            Debug::val($$cleanVariable);
+        }
+
+        
+
+        // Debug::var($this->variables);
+        // Debug::var($callableVariables[0]);
+
+        // foreach ($this->variables as $key => $value) {
+        //     if (! str_contains($cleanProduct, "{{ $key }}")) {
+        //         Debug::val($key);
+        //         // throw new Exception("Not enough variables or wrong formatting");
+        //     }
+
+        //     $cleanProduct = str_replace("{{ $key }}", $value, $cleanProduct);
+        // }
+
+        Debug::dd("STOP");
+
+        return $cleanProduct;
     }
 
-    function getStringBetween($string, $start, $end){
+
+
+    private function getStringBetween($string, $start, $end)
+    {
         $string = ' ' . $string;
         $ini = strpos($string, $start);
         if ($ini == 0) return '';
@@ -144,4 +178,6 @@ class ViewHandler
 
         return substr($string, $ini, $len);
     }
+
+
 }
