@@ -147,7 +147,7 @@ abstract class Model
             $value = "'" . "$value" . "'";
         });
 
-        Debug::dd("STOP");
+        //Debug::dd("STOP");
 
         $this->dbo()::insert($this->table(), implode(", ", $this->fields()), implode(", ", $vals))
             ->getStatement();

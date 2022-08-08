@@ -20,13 +20,14 @@ $router = new Router();
 $router->get("/", [\Nilixin\Edu\controller\HomeController::class, "index"]);
 
 $router->group(["prefix" => "/user"])->get("", [\Nilixin\Edu\controller\UserController::class, "index"])
-                       ->get("/select", [\Nilixin\Edu\controller\UserController::class, "select"])
-                       ->post("/show", [\Nilixin\Edu\controller\UserController::class, "show"])
-       ->group(["prefix" => "/test"])->get("", [\Nilixin\Edu\controller\TestController::class, "submit"])
-                       ->post("/submit", [\Nilixin\Edu\controller\TestController::class, "store"])
-       ->group(["prefix" => "/other"])->subgroup("/one")
-                        ->subgroup("/two")
-                        ->subgroup("/three")->get("", [\Nilixin\Edu\controller\HomeController::class, "other"]);
+    ->get("/select", [\Nilixin\Edu\controller\UserController::class, "select"])
+    ->get("/show", [\Nilixin\Edu\controller\UserController::class, "show"])
+    ->get("/create", [\Nilixin\Edu\controller\UserController::class, "create"])
+    ->group(["prefix" => "/test"])->get("", [\Nilixin\Edu\controller\TestController::class, "submit"])
+    ->post("/submit", [\Nilixin\Edu\controller\TestController::class, "store"])
+    ->group(["prefix" => "/other"])->subgroup("/one")
+    ->subgroup("/two")
+    ->subgroup("/three")->get("", [\Nilixin\Edu\controller\HomeController::class, "other"]);
 
 $router->group(["prefix" => ""])->get("/test1", [\Nilixin\Edu\controller\TestController::class, "extended"]);
 
@@ -49,24 +50,6 @@ echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
 // $user->add();
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //$view = new View();
 //$view->setTpl("public/tpl/main.html");
 //$view->render($user);
@@ -83,26 +66,6 @@ echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
 // $user->email = "random@bs.c";
 
 // $user->edit();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // SELECT EXAMPLE
@@ -138,7 +101,6 @@ echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
 // DELETE EXAMPLE
 // $result3 = Db::delete("users")->where("id = 460")->getStatement();
 // var_dump($result3);
-
 
 
 // USER MODEL SHENANIGANS EXAMPLE

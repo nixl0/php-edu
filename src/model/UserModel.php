@@ -6,17 +6,21 @@ use Nilixin\Edu\Model;
 use Nilixin\Edu\db\SoftDelete;
 use Nilixin\Edu\validation\UserValidation;
 
+/**
+ * @property $login string
+ */
 class UserModel extends Model
 {
     use SoftDelete;
 
-    protected $login;
-    protected $email;
-    protected $password;
+    public $login;
+    public $email;
+    public $password;
+    public $status;
 
     public function table(): string
     {
-        return "users";
+        return "user";
     }
 
     public function fields(): array
