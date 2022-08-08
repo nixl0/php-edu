@@ -6,7 +6,7 @@ error_reporting(-1);
 ini_set("display_errors", 1);
 
 use Nilixin\Edu\db\Db;
-use Nilixin\Edu\model\UserModel;
+use Nilixin\Edu\models\UserModel;
 use Nilixin\Edu\debug\Debug;
 use Nilixin\Edu\Router;
 
@@ -17,18 +17,18 @@ session_start();
 
 $router = new Router();
 
-$router->get("/", [\Nilixin\Edu\controller\HomeController::class, "index"]);
+$router->get("/", [\Nilixin\Edu\controllers\HomeController::class, "index"]);
 
-$router->group(["prefix" => "/user"])->get("", [\Nilixin\Edu\controller\UserController::class, "index"])
-                       ->get("/select", [\Nilixin\Edu\controller\UserController::class, "select"])
-                       ->post("/show", [\Nilixin\Edu\controller\UserController::class, "show"])
-       ->group(["prefix" => "/test"])->get("", [\Nilixin\Edu\controller\TestController::class, "submit"])
-                       ->post("/submit", [\Nilixin\Edu\controller\TestController::class, "store"])
+$router->group(["prefix" => "/user"])->get("", [\Nilixin\Edu\controllers\UserController::class, "index"])
+                       ->get("/select", [\Nilixin\Edu\controllers\UserController::class, "select"])
+                       ->post("/show", [\Nilixin\Edu\controllers\UserController::class, "show"])
+       ->group(["prefix" => "/test"])->get("", [\Nilixin\Edu\controllers\TestController::class, "submit"])
+                       ->post("/submit", [\Nilixin\Edu\controllers\TestController::class, "store"])
        ->group(["prefix" => "/other"])->subgroup("/one")
                         ->subgroup("/two")
-                        ->subgroup("/three")->get("", [\Nilixin\Edu\controller\HomeController::class, "other"]);
+                        ->subgroup("/three")->get("", [\Nilixin\Edu\controllers\HomeController::class, "other"]);
 
-$router->group(["prefix" => ""])->get("/test1", [\Nilixin\Edu\controller\TestController::class, "extended"]);
+$router->group(["prefix" => ""])->get("/test1", [\Nilixin\Edu\controllers\TestController::class, "extended"]);
 
 // $router->register("/", function () {
 //     echo "hello";

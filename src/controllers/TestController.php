@@ -1,6 +1,6 @@
 <?php
 
-namespace Nilixin\Edu\controller;
+namespace Nilixin\Edu\controllers;
 
 class TestController
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Nilixin\Edu\validation;
+namespace Nilixin\Edu\validations;
 
 use BadMethodCallException;
 use Nilixin\Edu\debug\Debug;
-use Nilixin\Edu\exception\InvalidCredentialsException;
+use Nilixin\Edu\exceptions\InvalidCredentialsException;
 
 class BaseValidation
 {

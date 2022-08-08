@@ -3,7 +3,7 @@
 namespace Nilixin\Edu;
 
 use Exception;
-use Nilixin\Edu\exception\ViewNotFoundException;
+use Nilixin\Edu\exceptions\ViewNotFoundException;
 use Nilixin\Edu\debug\Debug;
 
 class ViewHandler
@@ -26,9 +26,7 @@ class ViewHandler
 
     public static function make(string $viewFile)
     {
-        if (! file_exists($viewFile)) {
-            throw new Exception("View file not found");
-        }
+        if (! file_exists($viewFile)) throw new Exception("View file not found");
         
         self::$instance = new static($viewFile);
         
@@ -39,9 +37,7 @@ class ViewHandler
 
     public function setVariables(array $variables = [])
     {
-        if (empty($variables)) {
-            throw new Exception("Variables array is empty");
-        }
+        if (empty($variables)) throw new Exception("Variables array is empty");
 
         $this->variables = $variables;
 
@@ -52,9 +48,7 @@ class ViewHandler
 
     public function setLayout(string $layoutFile)
     {
-        if (! file_exists($layoutFile)) {
-            throw new Exception("Layout file not found");
-        }
+        if (! file_exists($layoutFile)) throw new Exception("Layout file not found");
 
         $this->layout = $layoutFile;
 
@@ -69,13 +63,9 @@ class ViewHandler
 
         $this->product = file_get_contents($this->view);
 
-        if (! empty($this->layout)) {
-            $this->product = $this->replaceInLayout();
-        }
+        if (! empty($this->layout)) $this->product = $this->replaceInLayout();
 
-        if (! empty($this->variables)) {
-            $this->product = $this->replaceVariables();
-        }
+        if (! empty($this->variables)) $this->product = $this->replaceVariables();
 
         echo $this->product;
 
@@ -86,15 +76,15 @@ class ViewHandler
 
     private function replaceInLayout()
     {
-        // поиск переменных в файле разметки
+        // поиск тегов в файле разметки
         $layoutContents = file_get_contents($this->layout);
         preg_match_all("/[{][%]\s+[\S][A-Za-z]*\s+[%][}]/", $layoutContents, $layoutTags);
 
-        // поиск переменных в файле представления
+        // поиск тегов в файле представления
         $viewContents = file_get_contents($this->view);
         preg_match_all("/[{][%]\s+[\S][A-Za-z]*\s+[%][}]/", $viewContents, $viewTags);
 
-        // проверка на соответствие переменных
+        // проверка на соответствие тегов
         // исключение, если не найдено пар переменных в файлах разметки и представления
         foreach ($layoutTags[0] as $layoutTag) {
             $found = false;
@@ -102,17 +92,14 @@ class ViewHandler
             foreach ($viewTags[0] as $viewTag) {
                 if ($layoutTag == $viewTag) {
                     $found = true;
-
                     break;
                 }
             }
 
-            if (! $found) {
-                throw new Exception("Not enough tags or wrong formatting");
-            }
+            if (! $found) throw new Exception("Not enough tags or wrong formatting");
         }
 
-        // замена тегов и строки внутри них в файле разметки на контент внутри тегов в файле представления
+        // замена тегов и контента по умолчанию внутри них в файле разметки на контент внутри тегов в файле представления
         for ($i = 0; $i < count($layoutTags[0]); $i += 2) {
             $openingTag = $layoutTags[0][$i];
             $closingTag = $layoutTags[0][$i + 1];
@@ -140,28 +127,22 @@ class ViewHandler
         }
 
         // TODO не працюе
+        // TODO усовершенствовать обработку исключений
         extract($this->variables);
-        Debug::val($user->login);
         
         foreach ($cleanVariables as $cleanVariable) {
-            Debug::val($$cleanVariable);
+
+            if (! str_contains($cleanProduct, "{{ $cleanVariable }}"))
+                throw new Exception("Not enough variables or wrong formatting");
+
+            if (isset($$cleanVariable)) { // если такая переменная обозначена
+                $cleanProduct = str_replace("{{ $cleanVariable }}", $$cleanVariable, $cleanProduct);
+            }
+            else { // иначе пытается работать с ней как с объектом
+                $parts = explode("->", $cleanVariable);
+                $cleanProduct = str_replace("{{ $cleanVariable }}", ${$parts[0]}->{$parts[1]}, $cleanProduct);
+            }
         }
-
-        
-
-        // Debug::var($this->variables);
-        // Debug::var($callableVariables[0]);
-
-        // foreach ($this->variables as $key => $value) {
-        //     if (! str_contains($cleanProduct, "{{ $key }}")) {
-        //         Debug::val($key);
-        //         // throw new Exception("Not enough variables or wrong formatting");
-        //     }
-
-        //     $cleanProduct = str_replace("{{ $key }}", $value, $cleanProduct);
-        // }
-
-        Debug::dd("STOP");
 
         return $cleanProduct;
     }

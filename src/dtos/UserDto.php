@@ -1,6 +1,6 @@
 <?php
 
-namespace Nilixin\Edu\dto;
+namespace Nilixin\Edu\dtos;
 
 class UserDto
 {

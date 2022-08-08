@@ -1,10 +1,10 @@
 <?php
 
-namespace Nilixin\Edu\model;
+namespace Nilixin\Edu\models;
 
 use Nilixin\Edu\Model;
 use Nilixin\Edu\db\SoftDelete;
-use Nilixin\Edu\validation\UserValidation;
+use Nilixin\Edu\validations\UserValidation;
 
 class UserModel extends Model
 {

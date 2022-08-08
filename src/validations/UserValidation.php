@@ -1,6 +1,6 @@
 <?php
 
-namespace Nilixin\Edu\validation;
+namespace Nilixin\Edu\validations;
 
 use Nilixin\Edu\debug\Debug;
 

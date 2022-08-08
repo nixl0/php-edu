@@ -5,7 +5,7 @@ namespace Nilixin\Edu;
 use BadMethodCallException;
 use Nilixin\Edu\debug\Debug;
 use Nilixin\Edu\db\Db;
-use Nilixin\Edu\exception\InvalidCredentialsException;
+use Nilixin\Edu\exceptions\InvalidCredentialsException;
 
 abstract class Model
 {

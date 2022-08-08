@@ -1,6 +1,6 @@
 <?php
 
-namespace Nilixin\Edu\exception;
+namespace Nilixin\Edu\exceptions;
 
 use Exception;
 
