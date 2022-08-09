@@ -22,7 +22,7 @@ $router->get("/", [\Nilixin\Edu\controllers\HomeController::class, "index"]);
 $router->group(["prefix" => "/user"])
         ->get("", [\Nilixin\Edu\controllers\UserController::class, "index"])
         ->get("/select", [\Nilixin\Edu\controllers\UserController::class, "select"])
-        ->post("/show", [\Nilixin\Edu\controllers\UserController::class, "show"])
+        ->get("/show", [\Nilixin\Edu\controllers\UserController::class, "show"])
     ->group(["prefix" => "/test"])
         ->get("", [\Nilixin\Edu\controllers\TestController::class, "submit"])
         ->post("/submit", [\Nilixin\Edu\controllers\TestController::class, "store"])
@@ -53,24 +53,6 @@ echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
 // $user->add();
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //$view = new View();
 //$view->setTpl("public/tpl/main.html");
 //$view->render($user);
@@ -87,26 +69,6 @@ echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
 // $user->email = "random@bs.c";
 
 // $user->edit();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // SELECT EXAMPLE
@@ -142,7 +104,6 @@ echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
 // DELETE EXAMPLE
 // $result3 = Db::delete("users")->where("id = 460")->getStatement();
 // var_dump($result3);
-
 
 
 // USER MODEL SHENANIGANS EXAMPLE
