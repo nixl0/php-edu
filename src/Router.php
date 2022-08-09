@@ -11,20 +11,21 @@ class Router
     private array $routes;
     private $prefix;
 
-    public function group(array $params)
+    public function group($params = [])
     {
-        if (! array_key_exists('prefix', $params))
-            throw new BadMethodCallException('Bad params array when grouping URLs');
-        $this->prefix = $params['prefix'];
+        // пустой префикс, если массив $params пуст
+        if (empty($params))
+            $this->prefix = "";
+
+        // определяет префикс, если массив $params содержит ключ prefix
+        if (array_key_exists("prefix", $params))
+            $this->prefix = $params["prefix"];
+
+        // приписывает подпрефикс, если массив $params содержит ключ subprefix
+        if (array_key_exists("subprefix", $params))
+            $this->prefix .= $params["subprefix"];
         
         // TODO поддержка middleware
-
-        return $this;
-    }
-
-    public function subgroup(string $prefix)
-    {
-        $this->prefix .= $prefix;
 
         return $this;
     }

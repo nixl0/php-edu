@@ -3,6 +3,7 @@
 namespace Nilixin\Edu\validations;
 
 use BadMethodCallException;
+use Exception;
 use Nilixin\Edu\debug\Debug;
 use Nilixin\Edu\exceptions\InvalidCredentialsException;
 
@@ -10,36 +11,28 @@ class BaseValidation
 {
     public static function check($value, $details)
     {
-        foreach ($details as $key => $detail) {
-            switch ($key) {
-                case "checkif":
-                    // проверка существует ли указанный метод в данном классе или в классе наследнике
-                    if (! method_exists(static::class, $detail) &&
-                        ! method_exists(self::class, $detail)) {
-                        throw new BadMethodCallException("No such method defined");
-                    }
+        foreach ($details as $attr => $detail) {
+            $methodExists = false;
 
-                    // вызов метода проверки
-                    if (! static::$detail($value)) {
-                        throw new InvalidCredentialsException("Invalid check-if");
-                    }
-                    break;
-                
-                case "min":
-                    if (! self::min($value, $detail)) {
-                        throw new InvalidCredentialsException("Size too big");
-                    }
-                    break;
+            // если значение указанное в АТРИБУТЕ ($attr) это метод
+            if (method_exists(static::class, $attr) ||
+                method_exists(self::class, $attr)) {
+                $methodExists = true;
+                if (!static::$attr($value, $detail))
+                    throw new InvalidCredentialsException("Invalid validation method ($attr)");
+            }
 
-                case "max":
-                    if (! self::max($value, $detail)) {
-                        throw new InvalidCredentialsException("Size too small");
-                    }
-                    break;
-                
-                default:
-                    throw new BadMethodCallException("Validation parameter not found");
-                    break;
+            // если значение указанное в ЗНАЧЕНИИ ($detail) это метод
+            if (method_exists(static::class, $detail) ||
+                method_exists(self::class, $detail)) {
+                $methodExists = true;
+                if (!static::$detail($value))
+                    throw new InvalidCredentialsException("Invalid validation method ($detail)");
+            }
+
+            // исключение, если метод валидации так и не был найден
+            if (! $methodExists) {
+                throw new BadMethodCallException("Validation method not found ($attr)");
             }
         }
     }
@@ -50,7 +43,7 @@ class BaseValidation
             return true;
         }
         else {
-            return false;
+            throw new InvalidCredentialsException("Text contains unsupported characters");
         }
     }
 
@@ -60,7 +53,7 @@ class BaseValidation
             return true;
         }
         else {
-            return false;
+            throw new InvalidCredentialsException("Value too small");
         }
     }
 
@@ -70,7 +63,7 @@ class BaseValidation
             return true;
         }
         else {
-            return false;
+            throw new InvalidCredentialsException("Value too big");
         }
     }
 }

@@ -3,10 +3,7 @@
     margin: 0;
     color: black;
     text-decoration: none;
-}
-
-body {
-    background-color: green;
+    font-family: sans-serif;
 }
 
 h1 {

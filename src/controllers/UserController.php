@@ -15,7 +15,8 @@ class UserController
 
     public function select()
     {
-        return ViewHandler::make("views/user/userSelectView.html");
+        return ViewHandler::make("views/user/userSelectView.html")
+                          ->setLayout("views/baseView.html");
     }
 
     public function show()

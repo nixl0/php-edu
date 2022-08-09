@@ -19,16 +19,20 @@ $router = new Router();
 
 $router->get("/", [\Nilixin\Edu\controllers\HomeController::class, "index"]);
 
-$router->group(["prefix" => "/user"])->get("", [\Nilixin\Edu\controllers\UserController::class, "index"])
-                       ->get("/select", [\Nilixin\Edu\controllers\UserController::class, "select"])
-                       ->post("/show", [\Nilixin\Edu\controllers\UserController::class, "show"])
-       ->group(["prefix" => "/test"])->get("", [\Nilixin\Edu\controllers\TestController::class, "submit"])
-                       ->post("/submit", [\Nilixin\Edu\controllers\TestController::class, "store"])
-       ->group(["prefix" => "/other"])->subgroup("/one")
-                        ->subgroup("/two")
-                        ->subgroup("/three")->get("", [\Nilixin\Edu\controllers\HomeController::class, "other"]);
+$router->group(["prefix" => "/user"])
+        ->get("", [\Nilixin\Edu\controllers\UserController::class, "index"])
+        ->get("/select", [\Nilixin\Edu\controllers\UserController::class, "select"])
+        ->post("/show", [\Nilixin\Edu\controllers\UserController::class, "show"])
+    ->group(["prefix" => "/test"])
+        ->get("", [\Nilixin\Edu\controllers\TestController::class, "submit"])
+        ->post("/submit", [\Nilixin\Edu\controllers\TestController::class, "store"])
+    ->group(["prefix" => "/other"])
+       ->group(["subprefix" => "/one"])
+       ->group(["subprefix" => "/two"])
+       ->group(["subprefix" => "/three"])
+            ->get("", [\Nilixin\Edu\controllers\HomeController::class, "other"]);
 
-$router->group(["prefix" => ""])->get("/test1", [\Nilixin\Edu\controllers\TestController::class, "extended"]);
+$router->group()->get("/test1", [\Nilixin\Edu\controllers\TestController::class, "extended"]);
 
 // $router->register("/", function () {
 //     echo "hello";

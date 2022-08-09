@@ -33,12 +33,12 @@ class UserModel extends Model
     {
         return [
             "login" => [
-                "checkif" => "plain",
+                "rule" => "plain",
                 "min" => 3,
                 "max" => 64
             ],
             "email" => [
-                "checkif" => "email"
+                "rule" => "email"
             ],
             "password" => [
                 "min" => 6,

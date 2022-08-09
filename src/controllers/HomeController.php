@@ -18,6 +18,8 @@ class HomeController
 
     public function other()
     {
-        return ViewHandler::make("views/homeView.html", ["hello" => "other"])->setLayout("views/baseView.html");
+        return ViewHandler::make("views/homeView.html")
+                          ->setVariables(["hello" => "other"])
+                          ->setLayout("views/baseView.html");
     }
 }
