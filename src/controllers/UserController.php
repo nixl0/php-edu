@@ -20,22 +20,33 @@ class UserController
                           ->setLayout("views/baseView.html");
     }
 
+    public function add()
+    {
+        return ViewHandler::make("views/user/userAddView.html")
+                          ->setLayout("views/baseView.html");
+    }
+
     public function create()
     {
         $userDto = UserDto::load([
-            'login' => 'dima',
-            'email' => 'dima@mail.ru',
-            'password' => '123211111'
+            'login' => $_POST['login'],
+            'email' => $_POST['email'],
+            'password' => $_POST['password']
         ]);
 
         $userService = new UserService();
-        $user = $userService->create($userDto);
 
-        return ViewHandler::make("view/user/userShowView.php", [
-            'login' => $user->login,
-            'email' => $user->email,
-            'password' => $user->password,
-        ])->setLayout("view/baseView.php");
+        try {
+            $user = $userService->create($userDto);
+
+            return ViewHandler::make("views/user/userShowView.html")
+                              ->setVariables(['user' => $user])
+                              ->setLayout("views/baseView.html");
+        } catch (\Throwable $th) {
+            return ViewHandler::make("views/user/userAddView.html")
+                              ->setVariables(['mistake' => $th->getMessage()])
+                              ->setLayout("views/baseView.html");
+        }
     }
 
     public function show()

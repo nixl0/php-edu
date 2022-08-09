@@ -12,6 +12,7 @@ class UserService
     public function create(UserDto $userDto)
     {
         $user = new UserModel();
+
         $user->login = $userDto->login;
         $user->email = $userDto->email;
         $user->password = $this->passwordCreateHash($userDto->password);
@@ -32,10 +33,10 @@ class UserService
      */
     public function getOne($id): UserModel
     {
-        $userToShow = new UserModel();
-        $userToShow->selectOne("id = $id");
+        $user = new UserModel();
+        $user->selectOne("id = $id");
 
-        return $userToShow;
+        return $user;
     }
 
     public function delete()
@@ -49,13 +50,12 @@ class UserService
      */
     public function passwordCreateHash(string $password): string
     {
-
         return md5($password);
     }
 
-    public function validatePassword($passwor)
+    public function validatePassword($password)
     {
-
+        // TODO и сюда подключать ту же валидацию, что и в модели?
     }
 
 }
