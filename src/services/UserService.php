@@ -19,6 +19,8 @@ class UserService
 
         $user->add();
 
+        UserModel::q()->create($userDto);
+
         return $user;
     }
 
@@ -33,8 +35,8 @@ class UserService
      */
     public function getOne($id): UserModel
     {
-        $user = new UserModel();
-        $user->selectOne("id = $id");
+        $user = UserModel::q()->selectOne("id = $id");
+
 
         return $user;
     }

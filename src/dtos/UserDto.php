@@ -2,7 +2,9 @@
 
 namespace Nilixin\Edu\dtos;
 
-class UserDto
+use Nilixin\Edu\interfaces\DtoInterface;
+
+class UserDto implements DtoInterface
 {
     public $login;
     public $email;

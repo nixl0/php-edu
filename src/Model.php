@@ -6,34 +6,37 @@ use BadMethodCallException;
 use Nilixin\Edu\debug\Debug;
 use Nilixin\Edu\db\Db;
 use Nilixin\Edu\exceptions\InvalidCredentialsException;
+use Nilixin\Edu\interfaces\DtoInterface;
 
 abstract class Model
 {
     // Базовые константы
-    
+
     protected $id;
-    
+
     public function dbo()
     {
         return Db::init();
     }
 
     public abstract function table();
+
     public abstract function fields();
+
     public abstract function validator();
+
     public abstract function validationRules();
 
 
-
     // Магические методы
-    
+
     public function __get($property)
     {
         if (property_exists($this, $property)) {
             return $this->$property;
         }
     }
-    
+
     public function __set($property, $value)
     {
         if (property_exists($this, $property)) {
@@ -42,7 +45,7 @@ abstract class Model
 
         return $this;
     }
-    
+
     public function __toString()
     {
         $properties = get_object_vars($this);
@@ -62,7 +65,6 @@ abstract class Model
     }
 
 
-
     public function getObjectVals()
     {
         $vals = array();
@@ -73,7 +75,6 @@ abstract class Model
 
         return $vals;
     }
-
 
 
     public function validate()
@@ -100,7 +101,6 @@ abstract class Model
     }
 
 
-
     /**
      * Автоматическое присвоение значений переменным.
      *
@@ -125,8 +125,19 @@ abstract class Model
         foreach ($this->fields() as $field) {
             $this->{$field} = $object->{$field};
         }
+
+        return $this;
     }
 
+    public static function q()
+    {
+        return new static();
+    }
+
+    public function create(DtoInterface $dto)
+    {
+
+    }
 
 
     /**
@@ -152,7 +163,6 @@ abstract class Model
         $this->dbo()::insert($this->table(), implode(", ", $this->fields()), implode(", ", $vals))
             ->getStatement();
     }
-
 
 
     public function edit()
@@ -184,7 +194,6 @@ abstract class Model
             ->where("id = $this->id")
             ->getStatement();
     }
-
 
 
     public function delete()
