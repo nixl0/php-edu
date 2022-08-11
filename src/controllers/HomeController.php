@@ -15,11 +15,4 @@ class HomeController
                           ->setVariables(["hello" => "world"])
                           ->setLayout("views/baseView.html");
     }
-
-    public function other()
-    {
-        return ViewHandler::make("views/homeView.html")
-                          ->setVariables(["hello" => "other"])
-                          ->setLayout("views/baseView.html");
-    }
 }

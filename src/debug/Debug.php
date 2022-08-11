@@ -32,4 +32,12 @@ class Debug
         echo '</pre>';
         die();
     }
+
+    public static function stop()
+    {
+        echo '<pre style="background: darkred; font-family: monospace; font-weight: bold; border: 1px solid black; padding: 2px">';
+        print_r('STOP');
+        echo '</pre>';
+        die();
+    }
 }

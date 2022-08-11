@@ -4,32 +4,25 @@ namespace Nilixin\Edu\dtos;
 
 class UserDto
 {
-    public $login;
-    public $email;
-    public $password;
-
-    public function __construct()
-    { }
-
-    /**
-     * @param $data
-     * @return UserDto
-     */
-    public static function load($data)
+    public function __toString()
     {
-        $dto = new self();
-        if (is_array($data)){
-            $dto->login = $data['login'];
-            $dto->email = $data['email'];
-            $dto->password = $data['password'];
-        }
-        else{
-            $dto->login = $data->login;
-            $dto->email = $data->email;
-            $dto->password = $data->password;
-        }
-
-        return $dto;
+        return $this->toArray();
     }
 
+    public function fields()
+    {
+        return [
+            'all' => [
+                'id', 'login', 'email', 'password', 'deleted_at'
+            ],
+            'necessary' => [
+                'login', 'email', 'password'
+            ]
+        ];
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
+    }
 }

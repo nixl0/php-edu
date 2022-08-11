@@ -2,75 +2,57 @@
 
 namespace Nilixin\Edu\controllers;
 
+use Nilixin\Edu\debug\Debug;
 use Nilixin\Edu\ViewHandler;
 use Nilixin\Edu\dtos\UserDto;
 use Nilixin\Edu\models\UserModel;
 use Nilixin\Edu\services\UserService;
+use Nilixin\Edu\requests\UserRequest;
 
 class UserController
 {
-    public function index()
+    public function fill()
     {
-        echo "<h1>User</h1>";
-    }
-
-    public function select()
-    {
-        return ViewHandler::make("views/user/userSelectView.html")
-                          ->setLayout("views/baseView.html");
+        return ViewHandler::make('views/user/userAddView.html')
+            ->setLayout('views/baseView.html')
+            ->setVariables(['error' => '']);
     }
 
     public function add()
     {
-        return ViewHandler::make("views/user/userAddView.html")
-                          ->setLayout("views/baseView.html");
+        $user = UserRequest::post(new UserDto);
+
+        $service = UserService::init(new UserModel);
+
+        $status = $service->add($user);
+        Debug::val($status); // TODO в зависимости от статуса отображать то или иное представление
     }
 
-    public function create()
+    // выводит все записи, удовлетворяющие указанному условию
+    public function showAll()
     {
-        $userDto = UserDto::load([
-            'login' => $_POST['login'],
-            'email' => $_POST['email'],
-            'password' => $_POST['password']
-        ]);
+        $model = new UserModel;
+        $service = UserService::init($model);
+        $entries = $service->selectAll('id < 20');
 
-        $userService = new UserService();
-
-        try {
-            $user = $userService->create($userDto);
-
-            return ViewHandler::make("views/user/userShowView.html")
-                              ->setVariables(['user' => $user])
-                              ->setLayout("views/baseView.html");
-        } catch (\Throwable $th) {
-            return ViewHandler::make("views/user/userAddView.html")
-                              ->setVariables(['mistake' => $th->getMessage()])
-                              ->setLayout("views/baseView.html");
+        $dtos = array();
+        foreach ($entries as $entry) {
+            $dto = $model->pop(new UserDto, $entry);
+            array_push($dtos, $dto);
         }
+
+        Debug::val($dtos);
     }
 
-    public function show()
+    // выводит одну запись
+    public function showOne()
     {
-        // $id = $_POST['id'];
-        $id = $_GET['id'];
+        $model = new UserModel;
+        $service = UserService::init($model);
+        $entry = $service->selectOne('id > 20');
 
-        // $userToShow = new UserModel();
-        // $userToShow->selectOne("id = $id");
-        // $userDto = UserDto::load($userToShow);
-        $userService = new UserService();
-        $user = $userService->getOne($id);
+        $dto = $model->pop(new UserDto, $entry);
 
-        // return ViewHandler::make("view/user/userShowView.html", ['user' => $userDto])->layout("view/baseView.html"); // TODO добавить поддержку передачи объектов
-        // return ViewHandler::make("view/user/userShowView.html")
-        //                   ->setVariables([
-        //                     'login' => $userToShow->login,
-        //                     'email' => $userToShow->email,
-        //                     'password' => $userToShow->password
-        //                   ])
-        //                   ->setLayout("view/baseView.html");
-
-        return ViewHandler::make("views/user/userShowView.html")
-                          ->setVariables(['user' => $user])
-                          ->setLayout("views/baseView.html");
+        Debug::val($dto);
     }
 }

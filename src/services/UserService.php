@@ -2,60 +2,103 @@
 
 namespace Nilixin\Edu\services;
 
+use BadMethodCallException;
+use Exception;
+use Nilixin\Edu\debug\Debug;
 use Nilixin\Edu\dtos\UserDto;
 use Nilixin\Edu\models\UserModel;
 
 class UserService
 {
-    const ACTIVE = 1;
+    public static $instance = null;
 
-    public function create(UserDto $userDto)
+    private function __construct(
+        public $model
+    )
+    { }
+
+    public static function init($model = new UserModel)
     {
-        $user = new UserModel();
+        if (! self::$instance) {
+            self::$instance = new UserService($model);
+        }
 
-        $user->login = $userDto->login;
-        $user->email = $userDto->email;
-        $user->password = $this->passwordCreateHash($userDto->password);
-
-        $user->add();
-
-        return $user;
+        return self::$instance;
     }
 
-    public function update()
+    public function selectAll($condition, $expression = '*')
     {
+        if (empty($condition) || empty($expression)) {
+            throw new Exception('Empty condition or expression when selecting');
+        }
 
+        return $this->model->dbo()::select($expression)
+            ->from($this->model->table())
+            ->where($condition)
+            ->fetchAll();
     }
 
-    /**
-     * @param $id
-     * @return UserModel
-     */
-    public function getOne($id): UserModel
+    public function selectOne($condition, $expression = '*')
     {
-        $user = new UserModel();
-        $user->selectOne("id = $id");
+        if (empty($condition) || empty($expression)) {
+            throw new Exception('Empty condition or expression when selecting');
+        }
 
-        return $user;
+        return $this->model->dbo()::select($expression)
+            ->from($this->model->table())
+            ->where($condition)
+            ->fetch();
     }
 
-    public function delete()
+    public function add($dto)
     {
+        if (empty($dto)) {
+            throw new Exception('Empty dbo provided');
+        }
+        
+        // TODO валидация
+        // TODO в валидацию встроить и проверку на пустоту
 
+        // окружение значений пользователя одинарными кавычками
+        array_walk($dto, function (&$value) {
+            $value = "'" . "$value" . "'";
+        });
+
+        return $this->model->dbo()::insert($this->model->table(), implode(", ", $dto->fields()['necessary']), implode(", ", $dto->toArray()))
+            ->execute();
     }
 
-    /**
-     * @param string $password
-     * @return string
-     */
-    public function passwordCreateHash(string $password): string
+    public function edit($dto)
     {
-        return md5($password);
+        // TODO валидация по примеру метода add()
+
+        // окружение значений пользователя одинарными кавычками
+        array_walk($dto, function (&$value) {
+            $value = "'" . "$value" . "'";
+        });
+
+        // конкатенация атрибутов и их значений
+        $data = '';
+        $isFirst = true;
+        foreach ($dto->fields()['necessary'] as $field) {
+            Debug::val($field);
+            if ($isFirst) {
+                $data .= "$field = " . $dto->$field;
+                $isFirst = false;
+            } else {
+                $data .= ", $field = " . $dto->$field;
+            }
+        }
+
+        return $this->model->dbo()::update($this->model->table(), $data)
+            ->where("id = $dto->id")
+            ->execute();
     }
 
-    public function validatePassword($password)
+    public function delete($dto)
     {
-        // TODO и сюда подключать ту же валидацию, что и в модели?
+        return $this->model->dbo()::delete($this->model->table())
+            ->where("id = $dto->id")
+            ->execute();
     }
-
 }
