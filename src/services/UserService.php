@@ -7,6 +7,7 @@ use Exception;
 use Nilixin\Edu\debug\Debug;
 use Nilixin\Edu\dtos\UserDto;
 use Nilixin\Edu\models\UserModel;
+use Nilixin\Edu\validations\UserValidation;
 
 class UserService
 {
@@ -55,7 +56,7 @@ class UserService
         if (empty($dto)) {
             throw new Exception('Empty dbo provided');
         }
-        
+
         // TODO валидация
         // TODO в валидацию встроить и проверку на пустоту
 

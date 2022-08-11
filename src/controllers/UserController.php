@@ -49,7 +49,7 @@ class UserController
     {
         $model = new UserModel;
         $service = UserService::init($model);
-        $entry = $service->selectOne('id > 20');
+        $entry = $service->selectOne("login = 'yanik'");
 
         $dto = $model->pop(new UserDto, $entry);
 

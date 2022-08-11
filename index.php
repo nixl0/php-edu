@@ -39,18 +39,18 @@ echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
 // Редактирование записи
 // ----------------------------------------------
 
-$model = new UserModel;
-$service = UserService::init($model);
-$entry = $service->selectOne("login = 'kabachok'");
+// $model = new UserModel;
+// $service = UserService::init($model);
+// $entry = $service->selectOne("login = 'kabachok'");
 
 
-$dto = $model->pop(new UserDto, $entry);
-Debug::val($dto);
+// $dto = $model->pop(new UserDto, $entry);
+// Debug::val($dto);
 
-$dto = $model->edit($dto, [
-    'email' => 'baklazhan'
-]);
-Debug::val($dto);
+// $dto = $model->edit($dto, [
+//     'email' => 'baklazhan'
+// ]);
+// Debug::val($dto);
 
-$status = $service->edit($dto);
-Debug::val($status);
+// $status = $service->edit($dto);
+// Debug::val($status);
