@@ -1,0 +1,34 @@
+{% title %}Fill user form{% /title %}
+
+{% body %}
+
+<form action="" method="post">
+    <label>Имя пользователя: </label>
+    <input type="text" name="username">
+    <br>
+    
+    <label>Пароль: </label>
+    <input type="text" name="password">
+    <br>
+
+    <label>Почта: </label>
+    <input type="text" name="email">
+    <br>
+
+    <label>Картинка: </label>
+    <input type="text" name="picture">
+    <br>
+
+    <label>Статус: </label>
+    <input type="text" name="status">
+    <br>
+        
+    <input type="submit" value="Добавить">
+    <br>
+    
+    <h3 class="error">
+        {{ error }}
+    </h3>
+</form>
+
+{% /body %}
