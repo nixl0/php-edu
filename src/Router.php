@@ -2,9 +2,7 @@
 
 namespace Nilixin\Edu;
 
-use BadMethodCallException;
 use Exception;
-use Nilixin\Edu\debug\Debug;
 
 class Router
 {

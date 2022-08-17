@@ -3,8 +3,6 @@
 namespace Nilixin\Edu;
 
 use Exception;
-use Nilixin\Edu\exceptions\ViewNotFoundException;
-use Nilixin\Edu\debug\Debug;
 
 class ViewHandler
 {
