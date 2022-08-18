@@ -4,16 +4,30 @@ namespace Nilixin\Edu\debug;
 
 class Debug
 {
-    public static function val($content)
+    public static function green($content)
     {
         echo '<pre style="background: palegreen; font-family: monospace; font-weight: bold; border: 1px solid black; padding: 2px">';
         print_r($content);
         echo '</pre>';
     }
 
-    public static function var($content)
+    public static function blue($content)
     {
         echo '<pre style="background: navy; font-family: monospace; font-weight: bold; border: 1px solid black; padding: 2px">';
+        print_r($content);
+        echo '</pre>';
+    }
+
+    public static function yellow($content)
+    {
+        echo '<pre style="background: palegoldenrod; font-family: monospace; font-weight: bold; border: 1px solid black; padding: 2px">';
+        print_r($content);
+        echo '</pre>';
+    }
+
+    public static function gray($content)
+    {
+        echo '<pre style="background: darkgray; font-family: monospace; font-weight: bold; border: 1px solid black; padding: 2px">';
         print_r($content);
         echo '</pre>';
     }

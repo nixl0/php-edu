@@ -19,7 +19,7 @@ abstract class Request
         if (empty($_POST)) return;
 
         foreach (self::init()->fields() as $field) {
-            if (! key_exists($field, $_POST) || empty($_POST[$field])) continue;
+            if (! key_exists($field, $_POST) or empty($_POST[$field])) continue;
 
             self::init()->$field = $_POST[$field];
         }

@@ -4,6 +4,7 @@ namespace Nilixin\Edu\controllers;
 
 use Nilixin\Edu\ViewHandler;
 use Nilixin\Edu\requests\UserRequest;
+use Nilixin\Edu\services\UserService;
 
 class UserController
 {
@@ -16,17 +17,11 @@ class UserController
 
     public function submit()
     {
-        // TODO сделать отправление данных на добавление
-
         $request = UserRequest::post();
-        \Nilixin\Edu\debug\Debug::val($request);
+        \Nilixin\Edu\debug\Debug::green($request);
 
-        // TODO убрать отсюда модель
-        // $model = new \Nilixin\Edu\models\UserModel;
-        // $query = $model->add($request);
-        // \Nilixin\Edu\debug\Debug::val($query);
-
-
+        $message = UserService::addUser($request);
+        \Nilixin\Edu\debug\Debug::green($message);
     }
 
     public function select()

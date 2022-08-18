@@ -7,7 +7,11 @@ use Nilixin\Edu\db\Db;
 
 abstract class Model
 {
-    public abstract function table();
+    abstract public function table();
+
+    abstract public function validator();
+
+    abstract public function rules();
 
     public function dbo()
     {
@@ -16,7 +20,7 @@ abstract class Model
 
     public function selectAll($condition, $expression = "*")
     {
-        if (empty($condition) || empty($expression)) {
+        if (empty($condition) or empty($expression)) {
             throw new Exception("Empty condition or expression when selecting");
         }
 
@@ -28,10 +32,11 @@ abstract class Model
 
     public function selectOne($condition, $expression = "*")
     {
-        if (empty($condition) || empty($expression)) {
+        if (empty($condition) or empty($expression)) {
             throw new Exception("Empty condition or expression when selecting");
         }
 
+        // должно возвращать modelDto'шку
         return $this->dbo()::select($expression)
             ->from($this->table())
             ->where($condition)
@@ -44,21 +49,29 @@ abstract class Model
             throw new Exception("Empty dbo provided");
         }
 
-        // TODO валидация
-        // TODO в валидацию встроить и проверку на пустоту
+        if ($this->validator()) {
+            $this->validator()::validate($dto, $this->rules());
+        }
 
         // окружение значений пользователя одинарными кавычками
         array_walk($dto, function (&$value) {
             $value = "'" . "$value" . "'";
         });
 
+        // TODO изменить getQuery() на execute()
         return $this->dbo()::insert($this->table(), implode(", ", array_keys(get_object_vars($dto))), implode(", ", array_values(get_object_vars($dto))))
             ->getQuery();
     }
 
     public function edit($dto)
     {
-        // TODO валидация по примеру метода add()
+        if (empty($dto)) {
+            throw new Exception("Empty dbo provided");
+        }
+
+        if ($this->validator()) {
+            $this->validator()::validate($dto, $this->rules());
+        }
 
         // окружение значений пользователя одинарными кавычками
         array_walk($dto, function (&$value) {
@@ -77,6 +90,7 @@ abstract class Model
             }
         }
 
+        // TODO изменить getQuery() на execute()
         return $this->dbo()::update($this->table(), $data)
             ->where("id = $dto->id")
             ->getQuery();

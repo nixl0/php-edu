@@ -98,7 +98,7 @@ class Db
             $this->pdoStatement = self::$conn->prepare($this->query); // TODO prepared statements написаны неправильно
             $this->pdoStatement->execute();
 
-            return $this->pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+            return $this->pdoStatement->fetchAll(PDO::FETCH_OBJ);
         } catch (\Throwable) {
             throw new Exception('Unable to execute PDO statement');
         }
@@ -110,7 +110,7 @@ class Db
             $this->pdoStatement = self::$conn->prepare($this->query);
             $this->pdoStatement->execute();
 
-            return $this->pdoStatement->fetch(PDO::FETCH_ASSOC);
+            return $this->pdoStatement->fetch(PDO::FETCH_OBJ);
         } catch (\Throwable) {
             throw new Exception('Unable to execute PDO statement');
         }

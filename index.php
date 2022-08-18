@@ -23,5 +23,22 @@ $router
         ->get("/show", [\Nilixin\Edu\controllers\UserController::class, "select"])
         ->post("/show", [\Nilixin\Edu\controllers\UserController::class, "demonstrate"]);
 
-
 echo $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
+
+
+
+// $model = new \Nilixin\Edu\models\UserModel;
+// $user = $model->selectOne("id = 24");
+// \Nilixin\Edu\debug\Debug::green($user);
+
+// $user->username = "username_changed";
+// \Nilixin\Edu\debug\Debug::green($user);
+
+// $message = $model->edit($user);
+// \Nilixin\Edu\debug\Debug::green($message);
+
+
+
+// $model = new \Nilixin\Edu\models\UserModel;
+// $users = $model->selectAll("id < 24");
+// \Nilixin\Edu\debug\Debug::green($users);
