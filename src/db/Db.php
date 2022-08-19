@@ -74,6 +74,22 @@ class Db
         return $db;
     }
 
+    public static function exists($table, $condition)
+    {
+        $db = self::init();
+
+        $db->query = "SELECT exists(SELECT 1 FROM $table WHERE $condition)";
+
+        try {
+            $db->pdoStatement = self::$conn->prepare($db->query);
+            $db->pdoStatement->execute();
+
+            return $db->pdoStatement->fetchColumn(0);
+        } catch (\Throwable) {
+            throw new Exception('Unable to execute PDO statement');
+        }
+    }
+
     public static function from($table)
     {
         $db = self::init();
@@ -130,4 +146,5 @@ class Db
     {
         return $this->query;
     }
+
 }

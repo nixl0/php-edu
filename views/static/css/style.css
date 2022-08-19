@@ -6,6 +6,7 @@
     font-family: sans-serif;
 }
 
-.mistake {
-    color: brown;
+.error {
+    color: white;
+    background-color: red;
 }

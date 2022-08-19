@@ -18,6 +18,11 @@ abstract class Model
         return Db::class;
     }
 
+    public function exists($condition)
+    {
+        return $this->dbo()::exists($this->table(), $condition);
+    }
+
     public function selectAll($condition, $expression = "*")
     {
         if (empty($condition) or empty($expression)) {
@@ -43,12 +48,13 @@ abstract class Model
             ->fetch();
     }
 
-    public function add($dto)
+    public function add($dto, $skip = ["id"])
     {
         if (empty($dto)) {
             throw new Exception("Empty dbo provided");
         }
 
+        // валидация
         if ($this->validator()) {
             $this->validator()::validate($dto, $this->rules());
         }
@@ -58,17 +64,38 @@ abstract class Model
             $value = "'" . "$value" . "'";
         });
 
-        // TODO изменить getQuery() на execute()
-        return $this->dbo()::insert($this->table(), implode(", ", array_keys(get_object_vars($dto))), implode(", ", array_values(get_object_vars($dto))))
+        $addableDto = array();
+        foreach ($dto as $key => $value) {
+            // переход к следующему полю, если поле определено пропускать
+            if (in_array($key, $skip)) continue;
+            
+            // переход к следующему полю, если поле не было заполнено / пустое
+            if ($value == "''") continue;
+
+            $addableDto[$key] = $value;
+        }
+        $addableDto = (object) $addableDto;
+
+        return $this->dbo()::insert($this->table(), implode(", ", array_keys(get_object_vars($addableDto))), implode(", ", array_values(get_object_vars($addableDto))))
             ->getQuery();
     }
 
-    public function edit($dto)
+    /**
+     * Редактирует данные модели.
+     * 
+     * Редактирует только те поля, которые были заполнены, а также те, которые НЕ были указаны в параметре $skip.
+     * Для корректной работы, методу нужно передавать такой DTO объект, в котором будет содержаться поле id.
+     * 
+     * @param object $dto DTO объект с данными.
+     * @param array $skip Массив, который определяет те поля, которые необходимо пропускать во время редактирования.
+     */
+    public function edit($dto, $skip = ["id"])
     {
         if (empty($dto)) {
             throw new Exception("Empty dbo provided");
         }
 
+        // валидация
         if ($this->validator()) {
             $this->validator()::validate($dto, $this->rules());
         }
@@ -79,21 +106,26 @@ abstract class Model
         });
 
         // конкатенация атрибутов и их значений
-        $data = "";
+        $addableData = "";
         $isFirst = true;
         foreach (array_keys(get_object_vars($dto)) as $field) {
+            // переход к следующему полю, если поле определено пропускать
+            if (in_array($field, $skip)) continue;
+
+            // переход к следующему полю, если поле не было заполнено / пустое
+            if ($dto->$field == "''") continue;
+
             if ($isFirst) {
-                $data .= "$field = " . $dto->$field;
+                $addableData .= "$field = " . $dto->$field;
                 $isFirst = false;
             } else {
-                $data .= ", $field = " . $dto->$field;
+                $addableData .= ", $field = " . $dto->$field;
             }
         }
 
-        // TODO изменить getQuery() на execute()
-        return $this->dbo()::update($this->table(), $data)
+        return $this->dbo()::update($this->table(), $addableData)
             ->where("id = $dto->id")
-            ->getQuery();
+            ->execute();
     }
 
     public function delete($dto)

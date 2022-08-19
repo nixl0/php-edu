@@ -6,7 +6,7 @@ abstract class Request
 {
     public static $instance;
 
-    public abstract function fields();
+    abstract public function fields();
 
     public static function init()
     {

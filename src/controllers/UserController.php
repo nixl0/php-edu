@@ -18,10 +18,19 @@ class UserController
     public function submit()
     {
         $request = UserRequest::post();
-        \Nilixin\Edu\debug\Debug::green($request);
 
-        $message = UserService::addUser($request);
-        \Nilixin\Edu\debug\Debug::green($message);
+        try {
+            UserService::add($request);
+
+            return ViewHandler::make("views/user/userShowView.html")
+                ->setLayout("views/baseView.html")
+                ->setVariables(["user" => $request]);
+        } catch (\Throwable $th) {
+            return ViewHandler::make("views/user/userFillView.html")
+                ->setLayout("views/baseView.html")
+                ->setVariables(["error" => $th->getMessage()]);
+        }
+        
     }
 
     public function select()
